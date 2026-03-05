@@ -478,12 +478,12 @@
             <div class="motivo-box" id="exibir-motivo"></div>
         </div>
 
-        <a href="#" class="botao-estilo" onclick="event.preventDefault(); acessarPagina('viuAlbum', 'album.html')">Ver nosso álbum completo 📸</a>
-        <a href="#" class="botao-estilo" style="background: linear-gradient(45deg, #0a0e27, #4a0080); box-shadow: 0 4px 15px rgba(74, 0, 128, 0.5);" onclick="event.preventDefault(); acessarPagina('viuGalaxia', 'galaxia.html')">
+        <a href="#" class="botao-estilo" onclick="clicarAlbum(event)">Ver nosso álbum completo 📸</a>
+        <a href="#" class="botao-estilo" style="background: linear-gradient(45deg, #0a0e27, #4a0080); box-shadow: 0 4px 15px rgba(74, 0, 128, 0.5);" onclick="clicarGalaxia(event)">
             🌌 Viajar para a nossa Galáxia
         </a>
         <br> 
-        <button class="botao-estilo" onclick="abrirModalPai(); marcarMissao('viuPai')" style="background: linear-gradient(45deg, #ffd700, #ff8c00); color: black; box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);">
+        <button class="botao-estilo" style="background: linear-gradient(45deg, #ffd700, #ff8c00); color: black; box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);" onclick="clicarPai(event)">
             Uma estrela que te ilumina ✨
         </button>
 
@@ -497,7 +497,7 @@
 
         <div id="area-missoes">
             <h3>🔒 Surpresa Oculta</h3>
-            <p style="text-align: center; font-size: 0.9em; margin-bottom: 15px;">Acesse todas as surpresas acima para desbloquear o final!</p>
+            <p style="text-align: center; font-size: 0.9em; margin-bottom: 15px;">Siga a ordem abaixo para desbloquear o final!</p>
             <div class="missao-item" id="check-album">❌ 1. Ver nosso Álbum</div>
             <div class="missao-item" id="check-galaxia">❌ 2. Viajar para a Galáxia</div>
             <div class="missao-item" id="check-pai">❌ 3. Ver a Estrela que te Ilumina</div>
@@ -577,16 +577,35 @@
         audio.ontimeupdate = () => { if (audio.currentTime >= tempoFim) { audio.currentTime = tempoInicio; audio.play(); } };
 
 
-        // --- SISTEMA DE MISSÕES (MÉTODO SEGURO DE CELULAR COM SETTIMEOUT MANTIDO!) ---
-        function marcarMissao(nomeDaMissao) {
-            localStorage.setItem(nomeDaMissao, 'true');
+        // --- SISTEMA DE MISSÕES (OBRIGA A ORDEM EXATA) ---
+        
+        function clicarAlbum(e) {
+            e.preventDefault();
+            localStorage.setItem('viuAlbum', 'true');
             checarMissoes();
+            setTimeout(() => { window.location.href = 'album.html'; }, 150);
         }
 
-        function acessarPagina(nomeDaMissao, url) {
-            localStorage.setItem(nomeDaMissao, 'true');
+        function clicarGalaxia(e) {
+            e.preventDefault();
+            if (localStorage.getItem('viuAlbum') !== 'true') {
+                alert("Ei apressadinha! Tem que ver nosso Álbum de Fotos primeiro! 📸❤️");
+                return;
+            }
+            localStorage.setItem('viuGalaxia', 'true');
             checarMissoes();
-            setTimeout(function() { window.location.href = url; }, 150);
+            setTimeout(() => { window.location.href = 'galaxia.html'; }, 150);
+        }
+
+        function clicarPai(e) {
+            e.preventDefault();
+            if (localStorage.getItem('viuGalaxia') !== 'true') {
+                alert("Calminha aí, amoreco! Você precisa visitar nossa Galáxia primeiro! 🌌❤️");
+                return;
+            }
+            localStorage.setItem('viuPai', 'true');
+            abrirModalPai();
+            checarMissoes();
         }
 
         function checarMissoes() {
@@ -732,7 +751,6 @@
             }, 400);
         }
 
-        // --- UTILIDADES EXTRAS ---
         function atualizarCronometro() {
             const d = new Date() - new Date(2026, 0, 31, 3, 53, 0); 
             document.getElementById("tempo-junto").innerHTML = `${Math.floor(d / 86400000)}d ${Math.floor((d % 86400000) / 3600000)}h ${Math.floor((d % 3600000) / 60000)}m ${Math.floor((d % 60000) / 1000)}s`;
@@ -750,7 +768,6 @@
         function abrirModalPai() { document.getElementById("modalPai").style.display = "flex"; }
         function fecharModalPai() { document.getElementById("modalPai").style.display = "none"; }
 
-        // --- LÓGICA DE ARRASTAR O LAÇO (CARTA) ---
         const laco = document.getElementById("laco-fita"), envelope = document.getElementById("envelope-magico");
         let startX = 0, currentX = 0, isDragging = false, cartaJaFoiAberta = false;
 
