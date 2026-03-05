@@ -548,6 +548,14 @@
             const palpite = document.getElementById("senha-amor").value.toLowerCase().trim();
             const senhasCertas = ["eu", "amoreco", "giselli", "amor", "sua rainha"];
             
+            // 👇 SENHA SECRETA PARA VOCÊ ZERAR A MEMÓRIA DO SEU CELULAR 👇
+            if (palpite === "limpar") {
+                localStorage.clear();
+                alert("Memória apagada! Agora você vai ver o site do zero, exatamente como ela vai ver na primeira vez.");
+                document.getElementById("senha-amor").value = "";
+                return;
+            }
+
             let acertou = false;
             for(let i = 0; i < senhasCertas.length; i++) {
                 if (palpite.includes(senhasCertas[i])) { acertou = true; break; }
