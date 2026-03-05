@@ -104,6 +104,7 @@
             animation: pulsarTitulo 3s ease-in-out infinite;
             position: relative;
             z-index: 10;
+            cursor: pointer; /* Cursor de clique para o Easter Egg */
         }
 
         @keyframes pulsarTitulo {
@@ -120,14 +121,18 @@
             font-size: 3.5em;
             z-index: 20;
             animation: flutuarCoroa 2s ease-in-out infinite;
-            pointer-events: none;
+            pointer-events: auto; /* Alterado para permitir clique do Easter Egg */
+            cursor: pointer;
         }
+
+        .spin-anim { animation: spinEECoroa 1s ease forwards !important; }
+        @keyframes spinEECoroa { 100% { transform: translateX(-50%) rotate(360deg); } }
 
         @keyframes flutuarCoroa {
             0%, 100% { transform: translateX(-50%) translateY(0) rotate(-5deg); }
             50% { transform: translateX(-50%) translateY(-15px) rotate(5deg); }
         }
-
+        
         /* --- FOTO PRINCIPAL E EFEITO GLOW --- */
         .container-foto {
             position: relative;
@@ -356,6 +361,7 @@
         .caixa-cronometro {
             background-color: rgba(255, 255, 255, 0.15); padding: 15px; border-radius: 15px;
             display: inline-block; margin: 20px 0; position: relative; z-index: 10;
+            cursor: pointer; /* Para o Easter Egg */
         }
 
         /* MODAL DE HOMENAGEM AO PAI */
@@ -391,18 +397,18 @@
         .missao-item { font-weight: bold; margin: 10px 0; font-size: 1.1em; display: flex; align-items: center; gap: 10px;}
         .missao-concluida { color: #1db954; text-decoration: line-through; opacity: 0.8; }
 
-        /* 👇 BRINCADEIRA DA PERGUNTA FUGITIVA (A ETAPA DE DESAFIO) 👇 */
+        /* 👇 BRINCADEIRA DA PERGUNTA FUGITIVA 👇 */
         #container-pergunta-fugitiva {
-            display: none; /* Começa escondido! Só revela quando zerar as missões */
+            display: none; 
             margin: 40px auto; position: relative; height: 250px; z-index: 10; max-width: 400px;
             animation: surgirAposDesbloqueio 1s ease-out;
         }
 
         @keyframes surgirAposDesbloqueio { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
-        /* 👇 CSS DO PEDIDO BIOMÉTRICO (O GRANDE FINAL) 👇 */
+        /* 👇 CSS DO PEDIDO BIOMÉTRICO 👇 */
         #container-biometria {
-            display: none; /* Começa escondido! Só revela quando ela vencer a pergunta fugitiva */
+            display: none; 
             margin: 40px auto; padding: 20px; position: relative; max-width: 400px; z-index: 10;
             animation: surgirAposDesbloqueio 1s ease-out;
         }
@@ -423,6 +429,18 @@
         #mensagem-aceitou { display: none; font-family: 'Dancing Script', cursive; font-size: 3em; color: #ffffff; text-shadow: 0 0 10px #ff3366, 0 0 20px #ff3366; animation: zoomIn 0.8s ease; width: 100%; padding: 20px; box-sizing: border-box; }
         .texto-promessa { font-size: 0.4em; font-family: 'Segoe UI', sans-serif; color: white; text-shadow: none; display: block; margin-top: 15px; line-height: 1.5; font-weight: normal; background: rgba(0,0,0,0.5); padding: 15px; border-radius: 15px; border: 1px solid rgba(255,255,255,0.2); }
 
+        /* 👇 NOVO: CONTADOR DE EASTER EGGS 👇 */
+        #contador-ee {
+            position: fixed; top: 15px; right: 15px; background: rgba(0, 0, 0, 0.7); border: 2px solid #ff3366;
+            color: white; padding: 8px 12px; border-radius: 20px; font-weight: bold; font-size: 0.8em; z-index: 10000;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5); display: none; backdrop-filter: blur(5px);
+        }
+        .ee-achado-anim { animation: piscarEE 0.5s ease; }
+        @keyframes piscarEE { 50% { transform: scale(1.2); background: #ff3366; } }
+
+        .ponto-secreto {
+            position: absolute; bottom: 20px; left: 20px; width: 30px; height: 30px; opacity: 0.01; cursor: pointer; z-index: 100;
+        }
     </style>
 </head>
 <body>
@@ -435,19 +453,23 @@
         <p id="erro-senha">Ops! Dica: Você olha pra ela no espelho todos os dias.</p>
     </div>
 
+    <div id="contador-ee">🔍 Segredos: <span id="num-ee">0</span>/5</div>
+
     <div id="conteudo-principal">
         
         <div id="estrelas-container"></div>
+        
+        <div class="ponto-secreto" onclick="cliqueSecreto()"></div>
 
-        <h1>Para o meu Amoreco ❤️</h1>
+        <h1 onclick="cliqueTitulo()">Para o meu Amoreco ❤️</h1>
 
         <button id="botao-play" class="botao-estilo" style="background: #1db954;">▶️ Ouvir nossa música</button>
         <audio id="musica-fundo" style="display: none;"><source src="musica2.mp3" type="audio/mpeg"></audio>
 
         <div class="container-foto" onclick="ativarGlowFoto()">
-            <div class="coroa-rainha">👑</div>
+            <div class="coroa-rainha" onclick="cliqueCoroa(event)">👑</div>
             <img src="nossa-foto.jpeg" id="foto-principal" class="foto-casal">
-            <div id="texto-secreto" class="texto-escondido-foto">A mulher que ilumina meus dias ✨</div>
+            <div id="texto-secreto" class="texto-escondido-foto">A mulher em que eu sou apaixonado e desejo✨</div>
         </div>
 
         <div class="envelope-wrapper" id="envelope-magico">
@@ -460,13 +482,13 @@
             <div class="laco-arrastavel" id="laco-fita">🎀 Arraste para abrir</div>
         </div>
 
-        <div class="caixa-cronometro">
+        <div class="caixa-cronometro" onclick="cliqueCronometro()">
             <p>Juntos há:</p>
             <p id="tempo-junto" style="font-weight:bold; font-size: 1.2em;"></p>
         </div>
 
         <div>
-            <p style="margin-top: 20px; font-weight: bold;">Toque no pote para um motivo do meu amor ✨</p>
+            <p style="margin-top: 20px; font-weight: bold;">Toque no pote para um motivo do meu amor por você ✨</p>
             <div class="pote-container" id="pote" onclick="soltarVagalume()">
                 <div class="pote-vidro">
                     <div class="vagalume v1"></div>
@@ -480,11 +502,11 @@
 
         <a href="#" class="botao-estilo" onclick="clicarAlbum(event)">Ver nosso álbum completo 📸</a>
         <a href="#" class="botao-estilo" style="background: linear-gradient(45deg, #0a0e27, #4a0080); box-shadow: 0 4px 15px rgba(74, 0, 128, 0.5);" onclick="clicarGalaxia(event)">
-            🌌 Viajar para a nossa Galáxia
+            🌌 Viajar para a nossa Galáxia  🌌
         </a>
         <br> 
         <button class="botao-estilo" style="background: linear-gradient(45deg, #ffd700, #ff8c00); color: black; box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);" onclick="clicarPai(event)">
-            Uma estrela que te ilumina ✨
+            💫 Uma estrela que te ilumina 💫
         </button>
 
         <div id="modalPai" class="modal-pai" onclick="fecharModalPai()">
@@ -528,7 +550,7 @@
             <div id="mensagem-aceitou">
                 Ela disse SIM! ❤️
                 <span class="texto-promessa">
-                    Prepare-se para ser a mulher mais feliz do mundo! Eu prometo que vou te levar pra comprar a aliança, porque sabemos que você não vai gostar se eu escolher, amoreco 😂💍
+                    Prepare-se para ser a mulher mais feliz do mundo! Eu prometo que vou te levar pra comprar a aliança, porque sabemos que você não vai gostar se eu escolher, amoreco eu te amo muito e sou o homem mais feliz por ter a chance de ter você ao meu lado ❤️💍
                 </span>
             </div>
         </div>
@@ -544,16 +566,16 @@
 
         audio.addEventListener('loadedmetadata', () => { audio.currentTime = tempoInicio; });
 
-        // 👇 A MÁGICA DE PULAR A SENHA SE ELA VOLTAR DE OUTRA ABA 👇
         window.addEventListener('DOMContentLoaded', (event) => {
             if (localStorage.getItem('senhaDesbloqueada') === 'true') {
                 document.getElementById("tela-bloqueio").style.display = "none";
                 document.getElementById("conteudo-principal").style.display = "block";
+                document.getElementById("contador-ee").style.display = "block"; // Mostra o contador de segredos
                 setTimeout(criarEstrelas, 100);
                 iniciarChuvaPetalas();
                 checarMissoes();
+                atualizarContadorEE();
                 
-                // Tenta tocar a música (o navegador pode bloquear até ela interagir)
                 audio.currentTime = tempoInicio;
                 audio.play().then(() => {
                     btnPlay.innerHTML = "🎶 Tocando sua música favorita";
@@ -565,12 +587,11 @@
             const palpite = document.getElementById("senha-amor").value.toLowerCase().trim();
             const senhasCertas = ["eu", "amoreco", "giselli", "amor", "sua rainha"];
             
-            // SENHA SECRETA PARA VOCÊ ZERAR A MEMÓRIA DO SEU CELULAR
             if (palpite === "limpar") {
                 localStorage.clear();
                 alert("Memória apagada! O site foi zerado com sucesso.");
                 document.getElementById("senha-amor").value = "";
-                location.reload(); // Recarrega a tela na hora para aplicar
+                location.reload(); 
                 return;
             }
 
@@ -580,11 +601,11 @@
             }
 
             if (acertou || palpite.length > 3) {
-                // 👇 SALVA O PASSE VIP NA MEMÓRIA 👇
                 localStorage.setItem('senhaDesbloqueada', 'true');
                 
                 document.getElementById("tela-bloqueio").style.display = "none";
                 document.getElementById("conteudo-principal").style.display = "block";
+                document.getElementById("contador-ee").style.display = "block"; // Revela o contador
                 setTimeout(criarEstrelas, 100); 
                 if (audio.paused) { 
                     audio.currentTime = tempoInicio; audio.play(); btnPlay.innerHTML = "🎶 Tocando sua música favorita"; 
@@ -592,6 +613,7 @@
                 iniciarChuvaPetalas();
                 
                 checarMissoes(); 
+                atualizarContadorEE();
             } else {
                 document.getElementById("erro-senha").style.display = "block";
             }
@@ -606,8 +628,84 @@
         audio.ontimeupdate = () => { if (audio.currentTime >= tempoFim) { audio.currentTime = tempoInicio; audio.play(); } };
 
 
+        // 👇👇 LÓGICA DOS 5 EASTER EGGS (SEGREDOS) 👇👇
+        const totalEE = 5;
+        let cliquesTitulo = 0;
+
+        function atualizarContadorEE() {
+            let achados = 0;
+            if(localStorage.getItem('ee_foto') === 'true') achados++;
+            if(localStorage.getItem('ee_coroa') === 'true') achados++;
+            if(localStorage.getItem('ee_titulo') === 'true') achados++;
+            if(localStorage.getItem('ee_cronometro') === 'true') achados++;
+            if(localStorage.getItem('ee_secreto') === 'true') achados++;
+
+            document.getElementById('num-ee').innerText = achados;
+
+            if(achados === totalEE && localStorage.getItem('ee_completou') !== 'true') {
+                localStorage.setItem('ee_completou', 'true');
+                setTimeout(() => {
+                    alert("🏆 VOCÊ ACHOU TODOS OS SEGREDOS DO SITE! Parabéns, curiosa mais linda do mundo! Te amo infinitamente!");
+                    confetti({ particleCount: 150, spread: 80, origin: { y: 0.5 } });
+                }, 500);
+            }
+        }
+
+        function descobrirEE(id, mensagem) {
+            if(localStorage.getItem('ee_' + id) !== 'true') {
+                localStorage.setItem('ee_' + id, 'true');
+                alert("🔍 Segredo Encontrado: " + mensagem);
+                const contador = document.getElementById('contador-ee');
+                contador.classList.add('ee-achado-anim');
+                setTimeout(() => contador.classList.remove('ee-achado-anim'), 500);
+                atualizarContadorEE();
+                confetti({ particleCount: 40, spread: 50, origin: { y: 0.8 } });
+            }
+        }
+
+        // EE 1: Clicar na Foto (Modificado do original)
+        function ativarGlowFoto() {
+            descobrirEE('foto', 'O brilho da mulher da minha vida! ✨');
+            const foto = document.getElementById("foto-principal"); const texto = document.getElementById("texto-secreto");
+            foto.classList.toggle("foto-brilho-ativo");
+            if (texto.style.opacity == "1") { texto.style.opacity = "0"; } else {
+                texto.style.opacity = "1"; setTimeout(() => { texto.style.opacity = "0"; foto.classList.remove("foto-brilho-ativo"); }, 3500);
+            }
+        }
+
+        // EE 2: Clicar na Coroa
+        function cliqueCoroa(event) {
+            event.stopPropagation(); // Impede de ativar o brilho da foto junto
+            const coroa = document.querySelector('.coroa-rainha');
+            coroa.classList.add('spin-anim');
+            setTimeout(() => coroa.classList.remove('spin-anim'), 1000);
+            descobrirEE('coroa', 'A coroa da minha verdadeira rainha! 👑');
+        }
+
+        // EE 3: Clicar no Título 5 vezes
+        function cliqueTitulo() {
+            cliquesTitulo++;
+            if(cliquesTitulo === 5) {
+                descobrirEE('titulo', 'Você clicou em mim 5 vezes! O nosso amor é insistente! ❤️');
+            }
+        }
+
+        // EE 4: Clicar no Cronômetro
+        function cliqueCronometro() {
+            descobrirEE('cronometro', 'E que esse tempo se multiplique por mil! ⏳❤️');
+            const texto = document.getElementById("tempo-junto");
+            const textoOriginal = texto.innerHTML;
+            texto.innerHTML = "Para todo o sempre! ❤️";
+            setTimeout(() => { texto.innerHTML = textoOriginal; }, 3000);
+        }
+
+        // EE 5: O Ponto Secreto Transparente
+        function cliqueSecreto() {
+            descobrirEE('secreto', 'Você achou o botão invisível! Que namorada detetive! 🕵️‍♀️❤️');
+        }
+
+
         // --- SISTEMA DE MISSÕES (OBRIGA A ORDEM EXATA) ---
-        
         function clicarAlbum(e) {
             e.preventDefault();
             localStorage.setItem('viuAlbum', 'true');
@@ -661,7 +759,6 @@
                 if(painelMissoes) painelMissoes.style.display = 'none'; 
                 
                 let painelPergunta = document.getElementById('container-pergunta-fugitiva');
-                // Só mostra a Pergunta se a Biometria ainda NÃO tiver sido revelada
                 if(painelPergunta && document.getElementById('container-biometria').style.display !== 'block') {
                     painelPergunta.style.display = 'block'; 
                 }
@@ -671,51 +768,43 @@
         window.addEventListener('pageshow', function() { checarMissoes(); });
 
 
-        // --- LÓGICA DO BOTÃO FUGITIVO (10 TENTATIVAS) ---
+        // --- LÓGICA DO BOTÃO FUGITIVO (15 TENTATIVAS) ---
         const btnSimFoge = document.getElementById("btn-sim-foge");
         const btnNaoFoge = document.getElementById("btn-nao-foge");
         const containerFuga = document.getElementById("container-pergunta-fugitiva");
         let tentativasSim = 0;
 
         function interagirComSim(e) {
-            if (tentativasSim < 10) {
-                if (e) e.preventDefault(); // Impede o dedo de clicar antes da hora
+            if (tentativasSim < 15) {
+                if (e) e.preventDefault(); 
                 
                 const containerW = containerFuga.offsetWidth;
                 const containerH = containerFuga.offsetHeight;
                 const simW = btnSimFoge.offsetWidth;
                 const simH = btnSimFoge.offsetHeight;
-                
-                const topoSeguro = 60; // Para o botão não subir por cima do título
+                const topoSeguro = 60; 
 
                 let novoX = Math.random() * (containerW - simW);
                 let novoY = topoSeguro + Math.random() * (containerH - simH - topoSeguro);
 
                 btnSimFoge.style.top = novoY + "px";
                 btnSimFoge.style.left = novoX + "px";
-                
                 tentativasSim++;
                 
-                // NA DÉCIMA VEZ: O botão desiste, volta pro lugar e deixa clicar!
-                if (tentativasSim >= 10) {
+                if (tentativasSim >= 15) {
                     btnSimFoge.innerHTML = "Pode clicar! ❤️";
                     btnSimFoge.style.top = "50%";
                     btnSimFoge.style.left = "30%";
                 }
             } else if (e && e.type === "click") {
-                // ACERTOU O CLIQUE DEPOIS DAS 10 VEZES! MÁGICA ACONTECE AQUI:
-                containerFuga.style.display = "none"; // Some com a brincadeira
-                document.getElementById("container-biometria").style.display = "block"; // Revela o pedido oficial!
-                
-                // Rola a tela pra baixo pra ela ver o sensor nascendo
+                containerFuga.style.display = "none"; 
+                document.getElementById("container-biometria").style.display = "block"; 
                 setTimeout(() => { window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' }); }, 100);
             }
         }
 
-        // Eventos para fugir
-        btnSimFoge.addEventListener("mouseover", (e) => { if(tentativasSim < 10) interagirComSim(e); });
-        btnSimFoge.addEventListener("touchstart", (e) => { if(tentativasSim < 10) interagirComSim(e); }, {passive: false});
-        // O evento de clique só funciona na 10ª vez
+        btnSimFoge.addEventListener("mouseover", (e) => { if(tentativasSim < 15) interagirComSim(e); });
+        btnSimFoge.addEventListener("touchstart", (e) => { if(tentativasSim < 15) interagirComSim(e); }, {passive: false});
         btnSimFoge.addEventListener("click", interagirComSim);
 
 
@@ -729,14 +818,6 @@
                 tempoEspera = Math.min(tempoEspera + 15, limiteSuave); setTimeout(soltarPetala, tempoEspera);
             }
             soltarPetala();
-        }
-
-        function ativarGlowFoto() {
-            const foto = document.getElementById("foto-principal"); const texto = document.getElementById("texto-secreto");
-            foto.classList.toggle("foto-brilho-ativo");
-            if (texto.style.opacity == "1") { texto.style.opacity = "0"; } else {
-                texto.style.opacity = "1"; setTimeout(() => { texto.style.opacity = "0"; foto.classList.remove("foto-brilho-ativo"); }, 3500);
-            }
         }
 
         function criarEstrelas() {
@@ -825,11 +906,9 @@
         function iniciarLeitura(e) {
             e.preventDefault(); 
             btnDigital.classList.add("scanning");
-            
             if (navigator.vibrate) navigator.vibrate(50); 
             
             let inicio = Date.now();
-            
             progressoInterval = setInterval(() => {
                 let tempoPassado = Date.now() - inicio;
                 let porcentagem = Math.min((tempoPassado / tempoNecessario) * 100, 100);
@@ -861,7 +940,6 @@
             
             document.getElementById("titulo-pedido").style.display = "none";
             document.getElementById("area-sensor").style.display = "none";
-            
             document.getElementById("mensagem-aceitou").style.display = "block";
             
             var duration = 5000; var end = Date.now() + duration;
