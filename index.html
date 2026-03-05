@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Para o meu amoreco</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    
+    <style>
+        /* FUNDO COM SENSAÇÃO DE RESPIRAÇÃO */
+        body {
+            background: linear-gradient(-45deg, #ff3366 0%, #d90429 30%, #4a0080 60%, #000033 85%, #050505 100%);
+            background-size: 400% 400%;
+            animation: respiracao 8s ease-in-out infinite;
+            min-height: 100vh;
+            margin: 0;
+            color: white;
+            text-align: center;
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        @keyframes respiracao {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 85% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* --- TELA DE BLOQUEIO (SENHA) --- */
+        #tela-bloqueio {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100vh;
+            background: linear-gradient(-45deg, #4a0080, #050505, #ff3366);
+            background-size: 300% 300%;
+            animation: respiracao 5s ease infinite;
+            z-index: 100000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        #senha-amor {
+            padding: 15px;
+            border-radius: 25px;
+            border: 2px solid #ff3366;
+            font-size: 1.2em;
+            text-align: center;
+            margin: 20px 0;
+            width: 80%;
+            max-width: 300px;
+            outline: none;
+            color: #333;
+        }
+
+        #erro-senha {
+            color: #ffb3c6;
+            font-weight: bold;
+            display: none;
+            margin-top: 10px;
+            animation: tremer 0.3s;
+        }
+
+        @keyframes tremer {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        /* Oculta o conteúdo do site até ela acertar a senha */
+        #conteudo-principal {
+            display: none;
+            padding: 30px 10px;
+        }
+
+        /* --- CHUVA DE PÉTALAS --- */
+        .petala {
+            position: fixed;
+            top: -10%;
+            z-index: 99999;
+            font-size: 25px;
+            pointer-events: none;
+            animation: cairPetala linear forwards;
+        }
+
+        @keyframes cairPetala {
+            0% { transform: translateY(0) rotate(0deg) scale(1); opacity: 1; }
+            100% { transform: translateY(110vh) rotate(360deg) scale(0.8); opacity: 0; }
+        }
+
+        /* --- TÍTULO ROMÂNTICO --- */
+        h1 {
+            font-family: 'Dancing Script', cursive;
+            font-size: 4em;
+            margin-top: 10px;
+            margin-bottom: 20px;
+            color: #ffffff;
+            text-shadow: 0 0 5px #ff3366, 0 0 10px #ff3366, 0 0 20px #ff3366, 0 0 40px #ff3366;
+            animation: pulsarTitulo 3s ease-in-out infinite;
+            position: relative;
+            z-index: 10;
+        }
+
+        @keyframes pulsarTitulo {
+            0%, 100% { transform: scale(1); text-shadow: 0 0 5px #ff3366, 0 0 10px #ff3366, 0 0 20px #ff3366; }
+            50% { transform: scale(1.05); text-shadow: 0 0 10px #ff3366, 0 0 20px #ff3366, 0 0 40px #ff3366, 0 0 60px #ff3366; }
+        }
+
+        /* --- COROA FLUTUANTE DA RAINHA --- */
+        .coroa-rainha {
+            position: absolute;
+            top: -35px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 3.5em;
+            z-index: 20;
+            animation: flutuarCoroa 2s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes flutuarCoroa {
+            0%, 100% { transform: translateX(-50%) translateY(0) rotate(-5deg); }
+            50% { transform: translateX(-50%) translateY(-15px) rotate(5deg); }
+        }
+
+        /* --- FOTO PRINCIPAL E EFEITO GLOW --- */
+        .container-foto {
+            position: relative;
+            display: block;
+            margin: 30px auto;
+            width: fit-content;
+            cursor: pointer; 
+        }
+
+        .foto-casal {
+            width: 250px; 
+            height: 250px; 
+            object-fit: cover; 
+            border-radius: 50%;
+            object-position: 10% 5%; 
+            padding: 12px;
+            background: linear-gradient(45deg, #ff3366, #9933ff, #33ccff, #ff3366);
+            background-size: 200% 200%;
+            animation: moverCores 4s ease infinite;
+            box-shadow: 0 6px 17px rgba(0,0,0,0.4);
+            display: block;
+            margin: 0 auto; 
+            position: relative; 
+            z-index: 10;
+            transition: all 0.4s ease; 
+        }
+
+        .foto-brilho-ativo {
+            box-shadow: 0 0 30px #ff3366, 0 0 60px #ff3366, 0 0 90px #ffd700 !important;
+            transform: scale(1.05);
+        }
+
+        .texto-escondido-foto {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 15px;
+            font-weight: bold;
+            font-size: 1.1em;
+            z-index: 30;
+            pointer-events: none;
+            opacity: 0; 
+            transition: opacity 0.4s ease;
+            width: 220px;
+            text-align: center;
+            border: 2px solid #ff3366;
+            text-shadow: 1px 1px 5px #ff3366;
+        }
+
+        /* --- CÉU ESTRELADO --- */
+        #estrelas-container {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
+            pointer-events: none; z-index: 1;
+        }
+        .estrela {
+            position: absolute; background: white; border-radius: 50%; opacity: 0.7;
+            animation: brilhar var(--duracao) infinite;
+        }
+        @keyframes brilhar {
+            0%, 100% { opacity: 0.6; transform: scale(1); } 
+            50% { opacity: 0.8; transform: scale(1.7); } 
+        }
+
+        /* --- RASTRO DE CORAÇÕES --- */
+        .coracao-rastro {
+            position: fixed; pointer-events: none; z-index: 9999; font-size: 20px;
+            animation: rastro-anim 1s ease-out forwards;
+        }
+        @keyframes rastro-anim {
+            0% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+            100% { transform: translate(-50%, -150%) scale(0.3); opacity: 0; }
+        }
+
+        /* --- BALÕES COM AS FRASES DELA --- */
+        .balao-frase {
+            position: fixed; background: rgba(255, 255, 255, 0.95); color: #d90429;
+            padding: 10px 18px; border-radius: 20px; font-weight: bold; font-size: 0.9em;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3); pointer-events: none; z-index: 9998;
+            max-width: 70vw; animation: flutuarBalao 4s ease-in-out forwards;
+        }
+        .balao-frase::after {
+            content: ''; position: absolute; bottom: -8px; left: 20px;
+            border-width: 10px 10px 0 0; border-style: solid;
+            border-color: rgba(255, 255, 255, 0.95) transparent transparent transparent;
+        }
+        @keyframes flutuarBalao {
+            0% { transform: translateY(20px) scale(0.8); opacity: 0; }
+            20% { transform: translateY(0) scale(1); opacity: 1; }
+            80% { transform: translateY(-30px) scale(1); opacity: 1; }
+            100% { transform: translateY(-50px) scale(0.8); opacity: 0; }
+        }
+
+       /* --- A CARTA INTERATIVA --- */
+        .envelope-wrapper {
+            position: relative;
+            width: 320px;
+            height: 280px; 
+            margin: 50px auto; 
+            perspective: 1000px; 
+            z-index: 10;
+        }
+
+        .envelope-costas {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #a6001b;
+            border-radius: 10px;
+            z-index: 1;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+        }
+
+        .carta-papel {
+            position: absolute;
+            top: 10px; left: 10px; right: 10px; 
+            height: 260px; 
+            background: #fffafa;
+            border-radius: 5px;
+            padding: 20px 15px;
+            box-sizing: border-box;
+            z-index: 2;
+            transition: transform 0.8s ease 0.4s; 
+            color: #333;
+            font-style: italic;
+            font-size: 0.9em;
+            line-height: 1.4; 
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+            overflow-y: auto; 
+            scrollbar-width: thin;
+            scrollbar-color: #ff3366 transparent;
+        }
+
+        .envelope-frente {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #e60026;
+            border-radius: 10px;
+            z-index: 3;
+            clip-path: polygon(0 0, 50% 50%, 100% 0, 100% 100%, 0 100%);
+            transition: opacity 0.5s ease 0.4s; 
+            pointer-events: none;
+        }
+
+        .envelope-aba {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 60%;
+            background: #ff1a40;
+            border-radius: 10px 10px 0 0;
+            z-index: 4; 
+            clip-path: polygon(0 0, 100% 0, 50% 100%);
+            transform-origin: top; 
+            pointer-events: none;
+        }
+
+        .laco-arrastavel {
+            position: absolute;
+            top: 55%; left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10;
+            background: #fff;
+            color: #d90429;
+            padding: 8px 15px;
+            border-radius: 25px;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            cursor: grab;
+            user-select: none; 
+            transition: opacity 0.3s ease;
+            border: 2px solid #d90429;
+            white-space: nowrap;
+        }
+
+        .laco-arrastavel:active { cursor: grabbing; }
+
+        .envelope-wrapper.aberto .envelope-aba {
+            animation: dobrarAbaParaTras 1.2s forwards ease-in-out;
+        }
+
+        @keyframes dobrarAbaParaTras {
+            0% { transform: rotateX(0deg); z-index: 4; }
+            40% { transform: rotateX(180deg); z-index: 4; } 
+            50% { transform: rotateX(180deg); z-index: 1; } 
+            100% { transform: rotateX(0deg); z-index: 1; } 
+        }
+
+        .envelope-wrapper.aberto .carta-papel { transform: translateY(0); z-index: 5; }
+        .envelope-wrapper.aberto .envelope-frente { opacity: 0; }
+        .laco-arrastavel.sumir { opacity: 0; pointer-events: none; }
+
+        /* --- POTE DE VAGALUMES --- */
+        .pote-container { position: relative; width: 120px; height: 180px; margin: 30px auto; cursor: pointer; }
+        .pote-vidro {
+            width: 100%; height: 100%; background: rgba(255, 255, 255, 0.1); border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 40px 40px 20px 20px; backdrop-filter: blur(5px); box-shadow: inset 0 0 20px rgba(255,255,255,0.2), 0 10px 20px rgba(0,0,0,0.5);
+            position: relative; overflow: hidden; transition: 0.3s;
+        }
+        .pote-tampa {
+            position: absolute; top: -15px; left: 10%; width: 80%; height: 30px; background: #8B4513;
+            border-radius: 10px; border: 2px solid #5c2e0b; transition: 0.5s; z-index: 2;
+        }
+        .vagalume {
+            position: absolute; width: 8px; height: 8px; background: #e0ff33; border-radius: 50%;
+            box-shadow: 0 0 15px 5px rgba(224, 255, 51, 0.8); animation: vagalumeVoa 4s infinite alternate ease-in-out;
+        }
+        .v1 { top: 70%; left: 30%; animation-duration: 3s; }
+        .v2 { top: 40%; left: 60%; animation-duration: 5s; animation-delay: 1s; }
+        .v3 { top: 80%; left: 70%; animation-duration: 4.5s; animation-delay: 0.5s; }
+        
+        @keyframes vagalumeVoa { 0% { transform: translate(0, 0) scale(1); opacity: 0.8; } 100% { transform: translate(20px, -30px) scale(1.3); opacity: 1; } }
+        
+        .pote-container.aberto .pote-tampa { transform: translateY(-30px) rotate(15deg); opacity: 0; }
+        .pote-container.aberto .pote-vidro { box-shadow: inset 0 0 40px rgba(224, 255, 51, 0.5), 0 0 30px rgba(224, 255, 51, 0.5); }
+        .motivo-box { margin: 10px auto 30px auto; min-height: 40px; font-size: 1.1em; font-weight: bold; color: #e0ff33; text-shadow: 0 0 10px rgba(224, 255, 51, 0.5); opacity: 0; transition: 0.5s; max-width: 90%; }
+
+        /* BOTÕES */
+        .botao-estilo {
+            background: linear-gradient(45deg, #ff3366, #9933ff); color: white; border: none; padding: 12px 25px;
+            font-weight: bold; border-radius: 25px; cursor: pointer; margin: 10px auto;
+            transition: 0.3s; box-shadow: 0 4px 15px rgba(0,0,0,0.3); text-decoration: none; display: inline-block;
+            position: relative; z-index: 10;
+        }
+
+        .caixa-cronometro {
+            background-color: rgba(255, 255, 255, 0.15); padding: 15px; border-radius: 15px;
+            display: inline-block; margin: 20px 0; position: relative; z-index: 10;
+        }
+
+        /* MODAL DE HOMENAGEM AO PAI */
+        .modal-pai {
+            display: none; position: fixed; z-index: 10000; left: 0; top: 0;
+            width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.85); 
+            backdrop-filter: blur(5px); justify-content: center; align-items: center; padding: 20px; box-sizing: border-box;
+        }
+        .modal-conteudo-pai {
+            background: linear-gradient(135deg, #2a0845 0%, #6441A5 100%); padding: 30px;
+            border-radius: 20px; text-align: center; max-width: 400px; width: 100%;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 2px solid rgba(255,255,255,0.2); animation: zoomIn 0.5s ease;
+        }
+        @keyframes zoomIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        
+        .foto-pai-estilo {
+            width: 220px; height: 220px; max-width: 100%; object-fit: cover; border-radius: 50%;
+            border: 4px solid white; margin: 0 auto 20px auto; box-shadow: 0 4px 15px rgba(0,0,0,0.5); display: block; 
+        }
+        
+        .texto-pai {
+            color: white; font-size: 1.15em; line-height: 1.5; font-style: italic;
+            text-align: center; margin: 0 auto; width: 95%; text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+        }
+
+        /* 👇 ÁREA DE MISSÕES (BLOQUEIO) 👇 */
+        #area-missoes {
+            background: rgba(0, 0, 0, 0.6); padding: 20px; border-radius: 15px;
+            border: 2px dashed #ffb3c6; max-width: 350px; margin: 40px auto;
+            text-align: left; box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+        #area-missoes h3 { text-align: center; color: #ff3366; margin-top: 0; font-family: 'Dancing Script', cursive; font-size: 2em; }
+        .missao-item { font-weight: bold; margin: 10px 0; font-size: 1.1em; display: flex; align-items: center; gap: 10px;}
+        .missao-concluida { color: #1db954; text-decoration: line-through; opacity: 0.8; }
+
+        /* 👇 CSS DO PEDIDO BIOMÉTRICO 👇 */
+        #container-biometria {
+            display: none; /* Começa escondido! */
+            margin: 40px auto; padding: 20px; position: relative; max-width: 400px; z-index: 10;
+            animation: surgirAposDesbloqueio 1s ease-out;
+        }
+
+        @keyframes surgirAposDesbloqueio { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+        #sensor-container { position: relative; width: 120px; height: 120px; margin: 0 auto; cursor: pointer; }
+        .anel-progresso { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 50%; background: conic-gradient(#1db954 0%, transparent 0%); box-shadow: 0 0 15px rgba(29, 185, 84, 0.5); z-index: 1; transition: background 0.1s; }
+        .anel-fundo { position: absolute; top: 5px; left: 5px; width: 110px; height: 110px; background: #111; border-radius: 50%; z-index: 2; }
+        .digital-btn { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 90px; height: 90px; background: #222; border-radius: 50%; z-index: 3; display: flex; justify-content: center; align-items: center; box-shadow: inset 0 0 10px rgba(0,0,0,0.8); transition: 0.3s; color: #ff3366; user-select: none; }
+        .digital-btn svg { width: 50px; height: 50px; fill: currentColor; transition: 0.3s; }
+        
+        .digital-btn.scanning { background: #330011; box-shadow: 0 0 20px #ff3366, inset 0 0 20px #ff3366; animation: pulsarScanner 0.5s infinite alternate; }
+        .digital-btn.scanning svg { fill: #fff; filter: drop-shadow(0 0 5px #fff); }
+        @keyframes pulsarScanner { 0% { transform: translate(-50%, -50%) scale(1); } 100% { transform: translate(-50%, -50%) scale(0.95); } }
+
+        #dica-segurar { margin-top: 15px; font-weight: bold; color: #ddd; font-size: 0.9em; animation: piscarTexto 2s infinite; }
+        @keyframes piscarTexto { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+
+        #mensagem-aceitou { display: none; font-family: 'Dancing Script', cursive; font-size: 3em; color: #ffffff; text-shadow: 0 0 10px #ff3366, 0 0 20px #ff3366; animation: zoomIn 0.8s ease; width: 100%; padding: 20px; box-sizing: border-box; }
+        .texto-promessa { font-size: 0.4em; font-family: 'Segoe UI', sans-serif; color: white; text-shadow: none; display: block; margin-top: 15px; line-height: 1.5; font-weight: normal; background: rgba(0,0,0,0.5); padding: 15px; border-radius: 15px; border: 1px solid rgba(255,255,255,0.2); }
+
+    </style>
+</head>
+<body>
+
+    <div id="tela-bloqueio">
+        <h1 style="font-size: 3em; margin-bottom: 5px;">Acesso Restrito</h1>
+        <p style="font-size: 1.2em; font-weight: bold;">Quem é a mulher mais maravilhosa do mundo?</p>
+        <input type="text" id="senha-amor" placeholder="Digite seu nome ou apelido...">
+        <button class="botao-estilo" onclick="verificarSenha()" style="font-size: 1.1em; padding: 15px 30px;">Desbloquear Surpresa 💖</button>
+        <p id="erro-senha">Ops! Dica: Você olha pra ela no espelho todos os dias.</p>
+    </div>
+
+    <div id="conteudo-principal">
+        
+        <div id="estrelas-container"></div>
+
+        <h1>Para o meu Amoreco ❤️</h1>
+
+        <button id="botao-play" class="botao-estilo" style="background: #1db954;">▶️ Ouvir nossa música</button>
+        <audio id="musica-fundo" style="display: none;"><source src="musica2.mp3" type="audio/mpeg"></audio>
+
+        <div class="container-foto" onclick="ativarGlowFoto()">
+            <div class="coroa-rainha">👑</div>
+            <img src="nossa-foto.jpeg" id="foto-principal" class="foto-casal">
+            <div id="texto-secreto" class="texto-escondido-foto">A mulher que ilumina meus dias ✨</div>
+        </div>
+
+        <div class="envelope-wrapper" id="envelope-magico">
+            <div class="envelope-costas"></div>
+            <div class="carta-papel">
+                <p id="texto-maquina"></p>
+            </div>
+            <div class="envelope-frente"></div>
+            <div class="envelope-aba"></div>
+            <div class="laco-arrastavel" id="laco-fita">🎀 Arraste para abrir</div>
+        </div>
+
+        <div class="caixa-cronometro">
+            <p>Juntos há:</p>
+            <p id="tempo-junto" style="font-weight:bold; font-size: 1.2em;"></p>
+        </div>
+
+        <div>
+            <p style="margin-top: 20px; font-weight: bold;">Toque no pote para um motivo do meu amor ✨</p>
+            <div class="pote-container" id="pote" onclick="soltarVagalume()">
+                <div class="pote-vidro">
+                    <div class="vagalume v1"></div>
+                    <div class="vagalume v2"></div>
+                    <div class="vagalume v3"></div>
+                </div>
+                <div class="pote-tampa"></div>
+            </div>
+            <div class="motivo-box" id="exibir-motivo"></div>
+        </div>
+
+        <a href="#" class="botao-estilo" onclick="event.preventDefault(); acessarPagina('viuAlbum', 'album.html')">Ver nosso álbum completo 📸</a>
+        <a href="#" class="botao-estilo" style="background: linear-gradient(45deg, #0a0e27, #4a0080); box-shadow: 0 4px 15px rgba(74, 0, 128, 0.5);" onclick="event.preventDefault(); acessarPagina('viuGalaxia', 'galaxia.html')">
+            🌌 Viajar para a nossa Galáxia
+        </a>
+        <br> 
+        <button class="botao-estilo" onclick="abrirModalPai(); marcarMissao('viuPai')" style="background: linear-gradient(45deg, #ffd700, #ff8c00); color: black; box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);">
+            Uma estrela que te ilumina ✨
+        </button>
+
+        <div id="modalPai" class="modal-pai" onclick="fecharModalPai()">
+            <div class="modal-conteudo-pai" onclick="event.stopPropagation()">
+                <img src="foto-pai.jpeg" alt="Homenagem" class="foto-pai-estilo">
+                <p class="texto-pai">"Olhando por você lá de cima, eu tenho a certeza absoluta de que ele sente um orgulho imenso da mulher incrível que você é, assim como eu sinto todos os dias."</p>
+                <button class="botao-estilo" onclick="fecharModalPai()" style="margin-top: 15px; font-size: 0.9em; background: rgba(255,255,255,0.2);">Fechar 🤍</button>
+            </div>
+        </div>
+
+        <div id="area-missoes">
+            <h3>🔒 Surpresa Oculta</h3>
+            <p style="text-align: center; font-size: 0.9em; margin-bottom: 15px;">Acesse todas as surpresas acima para desbloquear o final!</p>
+            <div class="missao-item" id="check-album">❌ 1. Ver nosso Álbum</div>
+            <div class="missao-item" id="check-galaxia">❌ 2. Viajar para a Galáxia</div>
+            <div class="missao-item" id="check-pai">❌ 3. Ver a Estrela que te Ilumina</div>
+        </div>
+
+        <div id="container-biometria">
+            <h2 id="titulo-pedido" style="margin-bottom: 20px;">Quer namorar comigo? 💍</h2>
+            
+            <div id="area-sensor">
+                <div id="sensor-container">
+                    <div class="anel-progresso" id="progresso-biometria"></div>
+                    <div class="anel-fundo"></div>
+                    <div class="digital-btn" id="btn-digital">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M12 2C8.13 2 5 5.13 5 9V11C5 11.55 5.45 12 6 12C6.55 12 7 11.55 7 11V9C7 6.24 9.24 4 12 4C14.76 4 17 6.24 17 9V10C17 10.55 17.45 11 18 11C18.55 11 19 10.55 19 10V9C19 5.13 15.87 2 12 2ZM9 9C9 7.34 10.34 6 12 6C13.66 6 15 7.34 15 9V13.5C15 14.33 14.33 15 13.5 15C12.67 15 12 14.33 12 13.5V9C12 8.45 11.55 8 11 8C10.45 8 10 8.45 10 9V13.5C10 15.43 11.57 17 13.5 17C15.43 17 17 15.43 17 13.5V9C17 6.24 14.76 4 12 4C9.24 4 7 6.24 7 9V14C7 14.55 6.55 15 6 15C5.45 15 5 14.55 5 14V9C5 5.13 8.13 2 12 2C15.87 2 19 5.13 19 9V10C19 10.55 18.55 11 18 11C17.45 11 17 10.55 17 10V9C17 6.24 14.76 4 12 4V4C9.24 4 7 6.24 7 9V11C7 11.55 6.55 12 6 12C5.45 12 5 11.55 5 11V9C5 5.13 8.13 2 12 2Z M12 8C11.45 8 11 8.45 11 9V15C11 15.55 11.45 16 12 16C12.55 16 13 15.55 13 15V9C13 8.45 12.55 8 12 8ZM9 12C8.45 12 8 12.45 8 13V16C8 16.55 8.45 17 9 17C9.55 17 10 16.55 10 16V13C10 12.45 9.55 12 9 12ZM15 15.5C15 16.33 14.33 17 13.5 17C12.67 17 12 16.33 12 15.5V12C12 11.45 12.45 11 13 11C13.55 11 14 11.45 14 12V15.5Z"/>
+                        </svg>
+                    </div>
+                </div>
+                <p id="dica-segurar">Pressione e segure para dizer SIM</p>
+            </div>
+            
+            <div id="mensagem-aceitou">
+                Ela disse SIM! ❤️
+                <span class="texto-promessa">
+                    Prepare-se para ser a mulher mais feliz do mundo! Eu prometo que vou te levar pra comprar a aliança, porque sabemos que você não vai gostar se eu escolher, amoreco 😂💍
+                </span>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // --- 1. TELA DE BLOQUEIO E MÚSICA ---
+        const audio = document.getElementById("musica-fundo");
+        const btnPlay = document.getElementById("botao-play");
+        const tempoInicio = 92; 
+        const tempoFim = 231;
+
+        audio.addEventListener('loadedmetadata', () => { audio.currentTime = tempoInicio; });
+
+        function verificarSenha() {
+            const palpite = document.getElementById("senha-amor").value.toLowerCase().trim();
+            const senhasCertas = ["eu", "amoreco", "giselli", "amor", "sua rainha"];
+            
+            let acertou = false;
+            for(let i = 0; i < senhasCertas.length; i++) {
+                if (palpite.includes(senhasCertas[i])) { acertou = true; break; }
+            }
+
+            if (acertou || palpite.length > 3) {
+                document.getElementById("tela-bloqueio").style.display = "none";
+                document.getElementById("conteudo-principal").style.display = "block";
+                setTimeout(criarEstrelas, 100); 
+                if (audio.paused) { 
+                    audio.currentTime = tempoInicio; audio.play(); btnPlay.innerHTML = "🎶 Tocando sua música favorita"; 
+                }
+                iniciarChuvaPetalas();
+                
+                checarMissoes();
+            } else {
+                document.getElementById("erro-senha").style.display = "block";
+            }
+        }
+
+        btnPlay.onclick = () => {
+            if (audio.paused) { 
+                if (audio.currentTime < tempoInicio || audio.currentTime >= tempoFim) audio.currentTime = tempoInicio;
+                audio.play(); btnPlay.innerHTML = "🎶 Tocando sua música favorita"; 
+            } else { audio.pause(); btnPlay.innerHTML = "▶️ Ouvir nossa música"; }
+        };
+        audio.ontimeupdate = () => { if (audio.currentTime >= tempoFim) { audio.currentTime = tempoInicio; audio.play(); } };
+
+        // --- SISTEMA DE MISSÕES (DESBLOQUEIO) ---
+        function marcarMissao(nomeDaMissao) {
+            localStorage.setItem(nomeDaMissao, 'true');
+            checarMissoes();
+        }
+
+        // 👇 FUNÇÃO NOVA: Salva e muda de página com segurança 👇
+        function acessarPagina(nomeDaMissao, url) {
+            localStorage.setItem(nomeDaMissao, 'true');
+            checarMissoes();
+            
+            // Aguarda 150 milissegundos para o celular ter tempo de processar a memória
+            setTimeout(function() {
+                window.location.href = url;
+            }, 150);
+        }
+
+        function checarMissoes() {
+            const viuAlbum = localStorage.getItem('viuAlbum') === 'true';
+            const viuGalaxia = localStorage.getItem('viuGalaxia') === 'true';
+            const viuPai = localStorage.getItem('viuPai') === 'true';
+
+            if (viuAlbum) {
+                let div = document.getElementById('check-album');
+                if(div) { div.innerHTML = "✅ 1. Nosso Álbum (Concluído)"; div.classList.add("missao-concluida"); }
+            }
+            if (viuGalaxia) {
+                let div = document.getElementById('check-galaxia');
+                if(div) { div.innerHTML = "✅ 2. Nossa Galáxia (Concluído)"; div.classList.add("missao-concluida"); }
+            }
+            if (viuPai) {
+                let div = document.getElementById('check-pai');
+                if(div) { div.innerHTML = "✅ 3. A Estrela que te Ilumina (Concluído)"; div.classList.add("missao-concluida"); }
+            }
+
+            if (viuAlbum && viuGalaxia && viuPai) {
+                let painelMissoes = document.getElementById('area-missoes');
+                if(painelMissoes) painelMissoes.style.display = 'none'; 
+                
+                let painelBiometria = document.getElementById('container-biometria');
+                if(painelBiometria) painelBiometria.style.display = 'block'; 
+            }
+        }
+
+        window.addEventListener('pageshow', function() {
+            checarMissoes();
+        });
+
+
+        // --- ANIMAÇÕES VISUAIS (Pétalas, Foto, Estrelas, Corações) ---
+        function iniciarChuvaPetalas() {
+            let tempoEspera = 20; const limiteSuave = 1000; 
+            function soltarPetala() {
+                const petala = document.createElement("div"); petala.innerHTML = "🌹"; petala.className = "petala";
+                petala.style.left = Math.random() * 100 + "vw"; petala.style.fontSize = (Math.random() * 15 + 15) + "px"; petala.style.animationDuration = (Math.random() * 3 + 3) + "s"; 
+                document.body.appendChild(petala); setTimeout(() => petala.remove(), 6000);
+                tempoEspera = Math.min(tempoEspera + 15, limiteSuave); setTimeout(soltarPetala, tempoEspera);
+            }
+            soltarPetala();
+        }
+
+        function ativarGlowFoto() {
+            const foto = document.getElementById("foto-principal"); const texto = document.getElementById("texto-secreto");
+            foto.classList.toggle("foto-brilho-ativo");
+            if (texto.style.opacity == "1") { texto.style.opacity = "0"; } else {
+                texto.style.opacity = "1"; setTimeout(() => { texto.style.opacity = "0"; foto.classList.remove("foto-brilho-ativo"); }, 3500);
+            }
+        }
+
+        function criarEstrelas() {
+            const container = document.getElementById('estrelas-container'); const alturaTotal = document.body.scrollHeight; 
+            for (let i = 0; i < 175; i++) { 
+                const e = document.createElement('div'); e.className = 'estrela';
+                e.style.width = e.style.height = (Math.random() * 3 + 1) + 'px'; 
+                e.style.left = Math.random() * 100 + 'vw'; e.style.top = Math.random() * alturaTotal + 'px'; e.style.setProperty('--duracao', Math.random() * 3 + 2 + 's');
+                container.appendChild(e);
+            }
+        }
+
+        let ultimoCoracao = 0; const tempoEspera = 50; 
+        function spawnHeart(x, y) {
+            const heart = document.createElement("div"); heart.className = "coracao-rastro"; heart.innerHTML = "❤️";
+            heart.style.left = x + "px"; heart.style.top = y + "px"; document.body.appendChild(heart); setTimeout(() => heart.remove(), 1000);
+        }
+        document.addEventListener("mousemove", (e) => { const agora = Date.now(); if (agora - ultimoCoracao > tempoEspera) { spawnHeart(e.clientX, e.clientY); ultimoCoracao = agora; } });
+        document.addEventListener("touchmove", (e) => { const agora = Date.now(); if (agora - ultimoCoracao > tempoEspera) { spawnHeart(e.touches[0].clientX, e.touches[0].clientY); ultimoCoracao = agora; } });
+
+
+        // --- CARTA, MOTIVOS E EXTRAS ---
+        const mensagem = "Feliz Dia das Mulheres, meu amor! Você é a mulher mais especial da minha vida e o meu maior desejo é ter você sempre ao meu lado. Sei que este não é o maior dos presentes, mas cada detalhe foi feito de coração, com muito esforço e carinho, pensando unicamente em você. Eu te amo infinitamente! Aproveite este seu cantinho... ❤️";
+        let charIndex = 0;
+        function digitar() {
+            if (charIndex < mensagem.length) {
+                document.getElementById("texto-maquina").innerHTML += mensagem.charAt(charIndex);
+                charIndex++; setTimeout(digitar, 50);
+            }
+        }
+
+        const motivos = [
+            "Amo seu sorriso que ilumina meu dia.", "Amo o jeito que você me faz sentir seguro.", "Amo nossas conversas de madrugada.", "Amo sua parceria em tudo.", "Amo o futuro que vejo com você.",
+            "Amo seu abraço que é meu lugar favorito.", "Amo o som da sua risada.", "Amo como você cuida de mim.", "Amo o brilho dos seus olhos.", "Amo seu cheiro que fica em mim."
+        ];
+        function soltarVagalume() {
+            const pote = document.getElementById("pote"); const box = document.getElementById("exibir-motivo");
+            pote.classList.add("aberto"); box.style.opacity = 0; 
+            setTimeout(() => {
+                box.innerHTML = motivos[Math.floor(Math.random() * motivos.length)]; box.style.opacity = 1; 
+                setTimeout(() => { pote.classList.remove("aberto"); }, 1000); 
+            }, 400);
+        }
+
+        function atualizarCronometro() {
+            const d = new Date() - new Date(2026, 0, 31, 3, 53, 0); 
+            document.getElementById("tempo-junto").innerHTML = `${Math.floor(d / 86400000)}d ${Math.floor((d % 86400000) / 3600000)}h ${Math.floor((d % 3600000) / 60000)}m ${Math.floor((d % 60000) / 1000)}s`;
+        }
+        setInterval(atualizarCronometro, 1000);
+
+        const frasesDela = ["Amoreco", "Aff Vei juro", "Coi...", "Ajuda eu", "Quero pa eu", "vai curintia"];
+        setInterval(() => {
+            const balao = document.createElement("div"); balao.className = "balao-frase";
+            balao.innerText = frasesDela[Math.floor(Math.random() * frasesDela.length)];
+            balao.style.left = (Math.random() * 60 + 10) + "vw"; balao.style.top = (Math.random() * 70 + 10) + "vh";
+            document.body.appendChild(balao); setTimeout(() => balao.remove(), 4000);
+        }, 3500);
+
+        function abrirModalPai() { document.getElementById("modalPai").style.display = "flex"; }
+        function fecharModalPai() { document.getElementById("modalPai").style.display = "none"; }
+
+        const laco = document.getElementById("laco-fita"), envelope = document.getElementById("envelope-magico");
+        let startX = 0, currentX = 0, isDragging = false, cartaJaFoiAberta = false;
+
+        laco.addEventListener('touchstart', (e) => { isDragging = true; startX = e.touches[0].clientX; laco.style.transition = 'none'; });
+        window.addEventListener('touchmove', (e) => { if(!isDragging || cartaJaFoiAberta) return; currentX = e.touches[0].clientX - startX; laco.style.transform = `translate(calc(-50% + ${currentX}px), -50%)`; });
+        window.addEventListener('touchend', () => { if(!isDragging || cartaJaFoiAberta) return; isDragging = false; checarAbertura(); });
+        laco.addEventListener('mousedown', (e) => { isDragging = true; startX = e.clientX; laco.style.transition = 'none'; });
+        window.addEventListener('mousemove', (e) => { if(!isDragging || cartaJaFoiAberta) return; currentX = e.clientX - startX; laco.style.transform = `translate(calc(-50% + ${currentX}px), -50%)`; });
+        window.addEventListener('mouseup', () => { if(!isDragging || cartaJaFoiAberta) return; isDragging = false; checarAbertura(); });
+
+        function checarAbertura() {
+            if(currentX > 90 || currentX < -90) {
+                cartaJaFoiAberta = true; laco.classList.add("sumir"); envelope.classList.add("aberto"); setTimeout(digitar, 1000); 
+            } else {
+                laco.style.transition = 'transform 0.4s ease'; laco.style.transform = `translate(-50%, -50%)`; currentX = 0;
+            }
+        }
+
+        // 👇 LÓGICA DO SENSOR BIOMÉTRICO 👇
+        const btnDigital = document.getElementById("btn-digital");
+        const anelProgresso = document.getElementById("progresso-biometria");
+        let timerSegurando;
+        let progressoInterval;
+        const tempoNecessario = 2500; 
+
+        function iniciarLeitura(e) {
+            e.preventDefault(); 
+            btnDigital.classList.add("scanning");
+            
+            if (navigator.vibrate) navigator.vibrate(50); 
+            
+            let inicio = Date.now();
+            
+            progressoInterval = setInterval(() => {
+                let tempoPassado = Date.now() - inicio;
+                let porcentagem = Math.min((tempoPassado / tempoNecessario) * 100, 100);
+                anelProgresso.style.background = `conic-gradient(#1db954 ${porcentagem}%, transparent ${porcentagem}%)`;
+            }, 30);
+
+            timerSegurando = setTimeout(() => {
+                clearInterval(progressoInterval);
+                aceitouBiometria();
+            }, tempoNecessario);
+        }
+
+        function cancelarLeitura(e) {
+            e.preventDefault();
+            clearTimeout(timerSegurando);
+            clearInterval(progressoInterval);
+            btnDigital.classList.remove("scanning");
+            anelProgresso.style.background = `conic-gradient(#1db954 0%, transparent 0%)`; 
+        }
+
+        btnDigital.addEventListener("touchstart", iniciarLeitura, {passive: false});
+        btnDigital.addEventListener("touchend", cancelarLeitura);
+        btnDigital.addEventListener("mousedown", iniciarLeitura);
+        btnDigital.addEventListener("mouseup", cancelarLeitura);
+        btnDigital.addEventListener("mouseleave", cancelarLeitura);
+
+        function aceitouBiometria() {
+            if (navigator.vibrate) { navigator.vibrate([500, 200, 500, 200, 1000]); }
+            
+            document.getElementById("titulo-pedido").style.display = "none";
+            document.getElementById("area-sensor").style.display = "none";
+            
+            document.getElementById("mensagem-aceitou").style.display = "block";
+            
+            var duration = 5000; var end = Date.now() + duration;
+            (function frame() {
+                confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#ff3366', '#ffffff', '#1db954'] });
+                confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#ff3366', '#ffffff', '#1db954'] });
+                if (Date.now() < end) { requestAnimationFrame(frame); }
+            }());
+        }
+    </script>
+</body>
+</html>

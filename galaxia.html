@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nosso Universo ✨</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Montserrat:wght@300;400;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* CONFIGURAÇÃO GERAL DA PÁGINA */
+        body, html {
+            margin: 0; padding: 0;
+            width: 100%; height: 100%;
+            background: radial-gradient(circle at center, #0a0e27 0%, #000000 100%);
+            color: white;
+            font-family: 'Montserrat', sans-serif;
+            overflow: hidden; 
+        }
+
+        #universo {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 1; 
+        }
+
+        /* --- O PAINEL DE TEXTO --- */
+        .painel-flutuante {
+            position: absolute;
+            top: 5%; 
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            text-align: center;
+            width: 90%;
+            max-width: 600px;
+            pointer-events: none; 
+        }
+
+        h1 {
+            font-family: 'Dancing Script', cursive;
+            font-size: 2.8em; 
+            text-shadow: 0 0 15px rgba(255, 255, 255, 0.8);
+            margin-bottom: 5px;
+            margin-top: 30px; 
+        }
+
+        .data-destaque {
+            font-size: 1.1em;
+            color: #ff3366;
+            font-weight: bold;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            text-shadow: 0 0 10px rgba(255, 51, 102, 0.5);
+            margin-bottom: 15px;
+        }
+
+        .texto-historia {
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 15px; 
+            border-radius: 15px;
+            line-height: 1.5;
+            font-size: 1em; 
+            transition: all 0.5s ease;
+        }
+
+        /* --- OS BOTÕES DE BAIXO (ABAS) --- */
+        .container-abas {
+            position: absolute;
+            bottom: 25px; 
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            display: flex;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 8px 12px;
+            border-radius: 30px;
+            backdrop-filter: blur(5px);
+            width: 90%;
+            max-width: 450px;
+            justify-content: space-around;
+        }
+
+        .aba {
+            background: transparent;
+            color: white;
+            border: none;
+            padding: 10px 12px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.85em;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 20px;
+            transition: 0.3s;
+            opacity: 0.6;
+        }
+
+        .aba.ativa {
+            opacity: 1;
+            background: linear-gradient(45deg, #ff3366, #9933ff);
+            box-shadow: 0 0 15px rgba(255, 51, 102, 0.5);
+        }
+
+        .aba-cadeado { color: #aaa; }
+
+        .btn-voltar {
+            position: absolute;
+            top: 15px; left: 15px;
+            z-index: 100;
+            color: white; text-decoration: none;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 15px; border-radius: 20px;
+            font-weight: bold; backdrop-filter: blur(5px);
+        }
+
+        .fade-in { animation: fadeIn 0.8s ease forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    </style>
+</head>
+<body>
+
+    <a href="index.html" class="btn-voltar">⬅️ Voltar</a>
+
+    <canvas id="universo"></canvas>
+
+    <div class="painel-flutuante">
+        <h1 id="titulo-aba">O Início de Tudo</h1>
+        <div id="data-aba" class="data-destaque">Data Desconhecida</div>
+        <div id="texto-aba" class="texto-historia fade-in">
+            Neste dia, o universo conspirou para que nossos caminhos se cruzassem.
+        </div>
+    </div>
+
+    <div class="container-abas">
+        <button class="aba ativa" onclick="mudarAba(0)">O Início</button>
+        <button class="aba" onclick="mudarAba(1)">Nossos Destinos</button>
+        <button class="aba aba-cadeado" onclick="tentarAbrirFuturo()">O Futuro 🔒</button>
+    </div>
+
+    <script>
+        const conteudos = [
+            {
+                titulo: "O Início de Tudo",
+                data: "31/01",
+                texto: "O dia em que nossos caminhos se cruzaram pela primeira vez. As estrelas lá em cima não sabiam, mas aqui embaixo uma nova constelação estava se formando: a nossa."
+            },
+            {
+                titulo: "Nascidos para se Encontrar",
+                data: "08/09 e 14/09",
+                texto: "Muito antes de nos conhecermos, o universo já havia desenhado nossos destinos. Nossas estrelas nasceram em dias diferentes, mas foram feitas para se alinharem e formarem uma única e linda constelação."
+            }
+        ];
+
+        const canvas = document.getElementById('universo');
+        const ctx = canvas.getContext('2d'); 
+        let width, height;
+        let estrelas = []; 
+        let mouse = { x: null, y: null }; 
+
+        function iniciarCanvas() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+            criarEstrelas(); 
+        }
+        window.addEventListener('resize', iniciarCanvas);
+        
+        window.addEventListener('mousemove', (e) => { mouse.x = e.x; mouse.y = e.y; });
+        window.addEventListener('touchmove', (e) => { mouse.x = e.touches[0].clientX; mouse.y = e.touches[0].clientY; });
+        window.addEventListener('mouseout', () => { mouse.x = null; mouse.y = null; });
+        window.addEventListener('touchend', () => { mouse.x = null; mouse.y = null; });
+
+        // --- 3. DEFININDO AS CONSTELAÇÕES MAIS PARA BAIXO ---
+        // Aumentei o valor do 'y' de todas as estrelas para empurrá-las para o fundo da tela
+        
+        // Aba 0: A constelação do início 
+        const constelacaoInicio = [
+            {x: 0.35, y: 0.55}, {x: 0.45, y: 0.62}, {x: 0.55, y: 0.55}, 
+            {x: 0.65, y: 0.70}, {x: 0.70, y: 0.62}, {x: 0.60, y: 0.77}, 
+            {x: 0.50, y: 0.85}, {x: 0.40, y: 0.77}, {x: 0.30, y: 0.70}
+        ];
+
+        // Aba 1: Duas Constelações que se ligam (Nascimentos)
+        const constelacaoNascimento = [
+            // Lado Esquerdo (08/09)
+            {x: 0.20, y: 0.85}, {x: 0.25, y: 0.70}, {x: 0.35, y: 0.60}, {x: 0.40, y: 0.73}, 
+            // O Elo de Ligação (Centro da tela)
+            {x: 0.50, y: 0.77}, 
+            // Lado Direito (14/09)
+            {x: 0.60, y: 0.73}, {x: 0.65, y: 0.60}, {x: 0.75, y: 0.70}, {x: 0.80, y: 0.85}
+        ];
+
+        class Estrela {
+            constructor(ehEspecial = false) {
+                this.ehEspecial = ehEspecial; 
+                this.x = Math.random() * width; 
+                this.y = Math.random() * height; 
+                
+                this.raio = ehEspecial ? Math.random() * 2 + 1.5 : Math.random() * 1.5;
+                
+                this.vx = (Math.random() - 0.5) * 0.2;
+                this.vy = (Math.random() - 0.5) * 0.2;
+
+                this.alvoX = this.x;
+                this.alvoY = this.y;
+            }
+
+            desenhar() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.raio, 0, Math.PI * 2);
+                ctx.fillStyle = this.ehEspecial ? "rgba(255, 51, 102, 0.9)" : "rgba(255, 255, 255, 0.6)"; 
+                
+                if(this.ehEspecial) {
+                    ctx.shadowBlur = 10;
+                    ctx.shadowColor = "#ff3366";
+                } else {
+                    ctx.shadowBlur = 0;
+                }
+                ctx.fill();
+            }
+
+            atualizar() {
+                if (this.ehEspecial) {
+                    this.x += (this.alvoX - this.x) * 0.02;
+                    this.y += (this.alvoY - this.y) * 0.02;
+                } else {
+                    this.x += this.vx;
+                    this.y += this.vy;
+                    if (this.x < 0) this.x = width;
+                    if (this.x > width) this.x = 0;
+                    if (this.y < 0) this.y = height;
+                    if (this.y > height) this.y = 0;
+                }
+                this.desenhar(); 
+            }
+        }
+
+        function criarEstrelas() {
+            estrelas = [];
+            for (let i = 0; i < 100; i++) { estrelas.push(new Estrela(false)); }
+            for (let i = 0; i < 9; i++) { estrelas.push(new Estrela(true)); }
+            atualizarAlvos(0); 
+        }
+
+        function atualizarAlvos(index) {
+            let layout = index === 0 ? constelacaoInicio : constelacaoNascimento;
+            let especiais = estrelas.filter(e => e.ehEspecial); 
+            
+            for (let i = 0; i < especiais.length; i++) {
+                if (layout[i]) {
+                    especiais[i].alvoX = layout[i].x * width;
+                    especiais[i].alvoY = layout[i].y * height;
+                }
+            }
+        }
+
+        function animar() {
+            ctx.clearRect(0, 0, width, height);
+
+            let especiais = estrelas.filter(e => e.ehEspecial);
+            ctx.beginPath();
+            ctx.strokeStyle = "rgba(255, 255, 255, 0.4)"; 
+            ctx.lineWidth = 1.5;
+            for (let i = 0; i < especiais.length - 1; i++) {
+                ctx.moveTo(especiais[i].x, especiais[i].y);
+                ctx.lineTo(especiais[i+1].x, especiais[i+1].y);
+            }
+            ctx.stroke();
+
+            for (let i = 0; i < estrelas.length; i++) {
+                estrelas[i].atualizar();
+
+                if (mouse.x != null && mouse.y != null) {
+                    let dxMouse = mouse.x - estrelas[i].x;
+                    let dyMouse = mouse.y - estrelas[i].y;
+                    let distMouse = Math.sqrt(dxMouse * dxMouse + dyMouse * dyMouse);
+
+                    if (distMouse < 100) {
+                        for (let j = i; j < estrelas.length; j++) {
+                            let dx = estrelas[i].x - estrelas[j].x;
+                            let dy = estrelas[i].y - estrelas[j].y;
+                            let dist = Math.sqrt(dx * dx + dy * dy);
+
+                            if (dist < 60) {
+                                ctx.beginPath();
+                                ctx.strokeStyle = `rgba(255, 51, 102, ${1 - dist/60})`;
+                                ctx.lineWidth = 0.8;
+                                ctx.moveTo(estrelas[i].x, estrelas[i].y);
+                                ctx.lineTo(estrelas[j].x, estrelas[j].y);
+                                ctx.stroke();
+                            }
+                        }
+                    }
+                }
+            }
+            requestAnimationFrame(animar); 
+        }
+
+        function mudarAba(index) {
+            const abas = document.querySelectorAll('.aba');
+            abas[0].classList.remove('ativa');
+            abas[1].classList.remove('ativa');
+            abas[index].classList.add('ativa'); 
+
+            const titulo = document.getElementById("titulo-aba");
+            const data = document.getElementById("data-aba");
+            const texto = document.getElementById("texto-aba");
+
+            texto.classList.remove('fade-in');
+            void texto.offsetWidth; 
+            texto.classList.add('fade-in');
+
+            titulo.innerText = conteudos[index].titulo;
+            data.innerText = conteudos[index].data;
+            texto.innerText = conteudos[index].texto;
+
+            atualizarAlvos(index);
+        }
+
+        function tentarAbrirFuturo() {
+            alert("Acesso Negado 🔒\n\nAs estrelas deste dia ainda estão se alinhando. Algumas surpresas exigem que o tempo passe para se revelarem na hora perfeita...");
+        }
+
+        iniciarCanvas(); 
+        mudarAba(0);     
+        animar();        
+    </script>
+</body>
+</html>
