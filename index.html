@@ -104,7 +104,7 @@
             animation: pulsarTitulo 3s ease-in-out infinite;
             position: relative;
             z-index: 10;
-            cursor: pointer; /* Cursor de clique para o Easter Egg */
+            cursor: pointer;
         }
 
         @keyframes pulsarTitulo {
@@ -121,7 +121,7 @@
             font-size: 3.5em;
             z-index: 20;
             animation: flutuarCoroa 2s ease-in-out infinite;
-            pointer-events: auto; /* Alterado para permitir clique do Easter Egg */
+            pointer-events: auto;
             cursor: pointer;
         }
 
@@ -361,7 +361,7 @@
         .caixa-cronometro {
             background-color: rgba(255, 255, 255, 0.15); padding: 15px; border-radius: 15px;
             display: inline-block; margin: 20px 0; position: relative; z-index: 10;
-            cursor: pointer; /* Para o Easter Egg */
+            cursor: pointer; 
         }
 
         /* MODAL DE HOMENAGEM AO PAI */
@@ -441,6 +441,28 @@
         .ponto-secreto {
             position: absolute; bottom: 20px; left: 20px; width: 30px; height: 30px; opacity: 0.01; cursor: pointer; z-index: 100;
         }
+
+        /* 👇 CSS DO MESVERSÁRIO (DIA 8) 👇 */
+        #banner-mesversario {
+            position: fixed;
+            top: -150px; 
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(45deg, #ff3366, #9933ff);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 0 0 25px 25px;
+            font-family: 'Dancing Script', cursive;
+            font-size: 2.2em;
+            font-weight: bold;
+            z-index: 1000001; 
+            box-shadow: 0 5px 20px rgba(0,0,0,0.6);
+            transition: top 1.5s cubic-bezier(0.68, -0.55, 0.27, 1.55); 
+            text-shadow: 2px 2px 5px rgba(0,0,0,0.5);
+            white-space: nowrap;
+            text-align: center;
+        }
+        .mostrar-banner { top: 0 !important; }
     </style>
 </head>
 <body>
@@ -456,6 +478,8 @@
     <div id="contador-ee">🔍 Segredos: <span id="num-ee">0</span>/5</div>
 
     <div id="conteudo-principal">
+        
+        <div id="banner-mesversario">Feliz Mesversário, meu amor! 🎉❤️</div>
         
         <div id="estrelas-container"></div>
         
@@ -576,6 +600,7 @@
                 iniciarChuvaPetalas();
                 checarMissoes();
                 atualizarContadorEE();
+                comemorarMesversario(); // <--- CHAMADA DO MESVERSÁRIO AQUI
                 
                 audio.currentTime = tempoInicio;
                 audio.play().then(() => {
@@ -590,7 +615,7 @@
             
             // SENHA SECRETA PARA VOCÊ ZERAR A MEMÓRIA DO SEU CELULAR
             if (palpite === "limpar") {
-                sessionStorage.clear(); // Mudou para sessionStorage aqui também
+                sessionStorage.clear(); 
                 alert("Memória apagada! O site foi zerado com sucesso.");
                 document.getElementById("senha-amor").value = "";
                 location.reload(); 
@@ -617,6 +642,8 @@
                 
                 checarMissoes(); 
                 atualizarContadorEE();
+                comemorarMesversario(); // <--- CHAMADA DO MESVERSÁRIO AQUI TAMBÉM
+
             } else {
                 document.getElementById("erro-senha").style.display = "block";
             }
@@ -631,7 +658,7 @@
         audio.ontimeupdate = () => { if (audio.currentTime >= tempoFim) { audio.currentTime = tempoInicio; audio.play(); } };
 
 
-        // 👇👇 LÓGICA DOS 5 EASTER EGGS (USANDO SESSIONSTORAGE) 👇👇
+        // 👇👇 LÓGICA DOS 5 EASTER EGGS 👇👇
         const totalEE = 5;
         let cliquesTitulo = 0;
 
@@ -666,7 +693,6 @@
             }
         }
 
-        // EE 1: Clicar na Foto
         function ativarGlowFoto() {
             descobrirEE('foto', 'O brilho da mulher da minha vida! ✨');
             const foto = document.getElementById("foto-principal"); const texto = document.getElementById("texto-secreto");
@@ -676,7 +702,6 @@
             }
         }
 
-        // EE 2: Clicar na Coroa
         function cliqueCoroa(event) {
             event.stopPropagation(); 
             const coroa = document.querySelector('.coroa-rainha');
@@ -685,7 +710,6 @@
             descobrirEE('coroa', 'A coroa da minha verdadeira rainha! 👑');
         }
 
-        // EE 3: Clicar no Título 5 vezes
         function cliqueTitulo() {
             cliquesTitulo++;
             if(cliquesTitulo === 5) {
@@ -693,7 +717,6 @@
             }
         }
 
-        // EE 4: Clicar no Cronômetro (COM O SEU AJUSTE DE 7 SEGUNDOS)
         function cliqueCronometro() {
             descobrirEE('cronometro', 'E que esse tempo se multiplique por mil! ⏳❤️');
             const texto = document.getElementById("tempo-junto");
@@ -702,13 +725,12 @@
             setTimeout(() => { texto.innerHTML = textoOriginal; }, 7000); 
         }
 
-        // EE 5: O Ponto Secreto Transparente
         function cliqueSecreto() {
             descobrirEE('secreto', 'Você achou o botão invisível! Que namorada detetive! 🕵️‍♀️❤️');
         }
 
 
-        // --- SISTEMA DE MISSÕES (USANDO SESSIONSTORAGE) ---
+        // --- SISTEMA DE MISSÕES ---
         function clicarAlbum(e) {
             e.preventDefault();
             sessionStorage.setItem('viuAlbum', 'true');
@@ -770,7 +792,7 @@
         window.addEventListener('pageshow', function() { checarMissoes(); });
 
 
-        // --- LÓGICA DO BOTÃO FUGITIVO (15 TENTATIVAS) ---
+        // --- LÓGICA DO BOTÃO FUGITIVO ---
         const btnSimFoge = document.getElementById("btn-sim-foge");
         const btnNaoFoge = document.getElementById("btn-nao-foge");
         const containerFuga = document.getElementById("container-pergunta-fugitiva");
@@ -954,8 +976,51 @@
                 if (Date.now() < end) { requestAnimationFrame(frame); }
             }());
         }
+
+        // --- LÓGICA DO MESVERSÁRIO (TODO DIA 08) ---
+        function comemorarMesversario() {
+            const dataHoje = new Date();
+            // Verifica se o dia de hoje é exatamente dia 8
+            if (dataHoje.getDate() === 8) {
+                const banner = document.getElementById("banner-mesversario");
+                
+                // Espera 1 segundo e meio após ela entrar no site para fazer a surpresa
+                setTimeout(() => {
+                    banner.classList.add("mostrar-banner");
+                    
+                    // Dispara uma chuva de confetes focada nas cores do amor
+                    let duration = 5000; // 5 segundos de confetes
+                    let end = Date.now() + duration;
+
+                    (function frame() {
+                        confetti({
+                            particleCount: 8,
+                            angle: 60,
+                            spread: 60,
+                            origin: { x: 0 },
+                            colors: ['#ff3366', '#ffffff', '#ff8c00']
+                        });
+                        confetti({
+                            particleCount: 8,
+                            angle: 120,
+                            spread: 60,
+                            origin: { x: 1 },
+                            colors: ['#ff3366', '#ffffff', '#ff8c00']
+                        });
+
+                        if (Date.now() < end) {
+                            requestAnimationFrame(frame);
+                        }
+                    }());
+                    
+                    // Esconde a faixa depois de 8 segundos para não atrapalhar o site
+                    setTimeout(() => {
+                        banner.classList.remove("mostrar-banner");
+                    }, 8000);
+
+                }, 1500); 
+            }
+        }
     </script>
 </body>
 </html>
-
-
