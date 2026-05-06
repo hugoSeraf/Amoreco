@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Para o meu amoreco</title>
+    <title>Para o meu amoreco ❤️</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
@@ -104,7 +104,7 @@
             animation: pulsarTitulo 3s ease-in-out infinite;
             position: relative;
             z-index: 10;
-            cursor: pointer;
+            cursor: pointer; /* Cursor de clique para o Easter Egg */
         }
 
         @keyframes pulsarTitulo {
@@ -121,7 +121,7 @@
             font-size: 3.5em;
             z-index: 20;
             animation: flutuarCoroa 2s ease-in-out infinite;
-            pointer-events: auto;
+            pointer-events: auto; /* Alterado para permitir clique do Easter Egg */
             cursor: pointer;
         }
 
@@ -361,7 +361,7 @@
         .caixa-cronometro {
             background-color: rgba(255, 255, 255, 0.15); padding: 15px; border-radius: 15px;
             display: inline-block; margin: 20px 0; position: relative; z-index: 10;
-            cursor: pointer; 
+            cursor: pointer; /* Para o Easter Egg */
         }
 
         /* MODAL DE HOMENAGEM AO PAI */
@@ -442,27 +442,82 @@
             position: absolute; bottom: 20px; left: 20px; width: 30px; height: 30px; opacity: 0.01; cursor: pointer; z-index: 100;
         }
 
-        /* 👇 CSS DO MESVERSÁRIO (DIA 8) 👇 */
-        #banner-mesversario {
-            position: fixed;
-            top: -150px; 
-            left: 50%;
-            transform: translateX(-50%);
-            background: linear-gradient(45deg, #ff3366, #9933ff);
-            color: white;
-            padding: 15px 30px;
-            border-radius: 0 0 25px 25px;
-            font-family: 'Dancing Script', cursive;
-            font-size: 2.2em;
-            font-weight: bold;
-            z-index: 1000001; 
-            box-shadow: 0 5px 20px rgba(0,0,0,0.6);
-            transition: top 1.5s cubic-bezier(0.68, -0.55, 0.27, 1.55); 
-            text-shadow: 2px 2px 5px rgba(0,0,0,0.5);
-            white-space: nowrap;
-            text-align: center;
+        /* --- BADGE DE ÚLTIMA ATUALIZAÇÃO --- */
+        .badge-atualizacao {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin: 15px auto 5px;
+            padding: 10px 22px;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 105, 180, 0.5);
+            border-radius: 30px;
+            font-size: 0.9em;
+            color: #ffd1dc;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(255, 51, 102, 0.35), inset 0 0 15px rgba(255, 255, 255, 0.05);
+            animation: brilhoBadge 3s ease-in-out infinite;
+            z-index: 10;
         }
-        .mostrar-banner { top: 0 !important; }
+
+        @keyframes brilhoBadge {
+            0%, 100% {
+                box-shadow: 0 0 20px rgba(255, 51, 102, 0.35), inset 0 0 15px rgba(255, 255, 255, 0.05);
+                transform: scale(1);
+            }
+            50% {
+                box-shadow: 0 0 40px rgba(255, 105, 180, 0.7), inset 0 0 25px rgba(255, 105, 180, 0.15);
+                transform: scale(1.03);
+            }
+        }
+
+        .badge-atualizacao::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 60%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            animation: shimmerBadge 4s infinite;
+        }
+
+        @keyframes shimmerBadge {
+            0% { left: -100%; }
+            60%, 100% { left: 200%; }
+        }
+
+        .badge-atualizacao .icone-coracao {
+            display: inline-block;
+            animation: pulsarCoracaoBadge 1.5s ease-in-out infinite;
+            font-size: 1.1em;
+        }
+
+        @keyframes pulsarCoracaoBadge {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.35); }
+        }
+
+        .badge-atualizacao .brilho-lateral {
+            position: absolute;
+            font-size: 0.7em;
+            opacity: 0.9;
+            animation: girarBrilho 2.5s linear infinite;
+        }
+
+        .badge-atualizacao .brilho-lateral.esquerda { left: -18px; }
+        .badge-atualizacao .brilho-lateral.direita { right: -18px; animation-delay: 1.25s; }
+
+        @keyframes girarBrilho {
+            0% { transform: rotate(0deg) scale(0.8); opacity: 0.4; }
+            50% { transform: rotate(180deg) scale(1.2); opacity: 1; }
+            100% { transform: rotate(360deg) scale(0.8); opacity: 0.4; }
+        }
     </style>
 </head>
 <body>
@@ -478,12 +533,17 @@
     <div id="contador-ee">🔍 Segredos: <span id="num-ee">0</span>/5</div>
 
     <div id="conteudo-principal">
-        
-        <div id="banner-mesversario">Feliz Mesversário, meu amor! 🎉❤️</div>
-        
+
         <div id="estrelas-container"></div>
-        
+
         <div class="ponto-secreto" onclick="cliqueSecreto()"></div>
+
+        <div class="badge-atualizacao">
+            <span class="brilho-lateral esquerda">✨</span>
+            <span class="icone-coracao">💖</span>
+            Última atualização: <strong id="data-atualizacao">06/05/2026</strong>
+            <span class="brilho-lateral direita">✨</span>
+        </div>
 
         <h1 onclick="cliqueTitulo()">Para o meu Amoreco ❤️</h1>
 
@@ -600,7 +660,6 @@
                 iniciarChuvaPetalas();
                 checarMissoes();
                 atualizarContadorEE();
-                comemorarMesversario(); // <--- CHAMADA DO MESVERSÁRIO AQUI
                 
                 audio.currentTime = tempoInicio;
                 audio.play().then(() => {
@@ -615,7 +674,7 @@
             
             // SENHA SECRETA PARA VOCÊ ZERAR A MEMÓRIA DO SEU CELULAR
             if (palpite === "limpar") {
-                sessionStorage.clear(); 
+                sessionStorage.clear(); // Mudou para sessionStorage aqui também
                 alert("Memória apagada! O site foi zerado com sucesso.");
                 document.getElementById("senha-amor").value = "";
                 location.reload(); 
@@ -642,8 +701,6 @@
                 
                 checarMissoes(); 
                 atualizarContadorEE();
-                comemorarMesversario(); // <--- CHAMADA DO MESVERSÁRIO AQUI TAMBÉM
-
             } else {
                 document.getElementById("erro-senha").style.display = "block";
             }
@@ -658,7 +715,7 @@
         audio.ontimeupdate = () => { if (audio.currentTime >= tempoFim) { audio.currentTime = tempoInicio; audio.play(); } };
 
 
-        // 👇👇 LÓGICA DOS 5 EASTER EGGS 👇👇
+        // 👇👇 LÓGICA DOS 5 EASTER EGGS (USANDO SESSIONSTORAGE) 👇👇
         const totalEE = 5;
         let cliquesTitulo = 0;
 
@@ -693,6 +750,7 @@
             }
         }
 
+        // EE 1: Clicar na Foto
         function ativarGlowFoto() {
             descobrirEE('foto', 'O brilho da mulher da minha vida! ✨');
             const foto = document.getElementById("foto-principal"); const texto = document.getElementById("texto-secreto");
@@ -702,6 +760,7 @@
             }
         }
 
+        // EE 2: Clicar na Coroa
         function cliqueCoroa(event) {
             event.stopPropagation(); 
             const coroa = document.querySelector('.coroa-rainha');
@@ -710,6 +769,7 @@
             descobrirEE('coroa', 'A coroa da minha verdadeira rainha! 👑');
         }
 
+        // EE 3: Clicar no Título 5 vezes
         function cliqueTitulo() {
             cliquesTitulo++;
             if(cliquesTitulo === 5) {
@@ -717,6 +777,7 @@
             }
         }
 
+        // EE 4: Clicar no Cronômetro (COM O SEU AJUSTE DE 7 SEGUNDOS)
         function cliqueCronometro() {
             descobrirEE('cronometro', 'E que esse tempo se multiplique por mil! ⏳❤️');
             const texto = document.getElementById("tempo-junto");
@@ -725,12 +786,13 @@
             setTimeout(() => { texto.innerHTML = textoOriginal; }, 7000); 
         }
 
+        // EE 5: O Ponto Secreto Transparente
         function cliqueSecreto() {
             descobrirEE('secreto', 'Você achou o botão invisível! Que namorada detetive! 🕵️‍♀️❤️');
         }
 
 
-        // --- SISTEMA DE MISSÕES ---
+        // --- SISTEMA DE MISSÕES (USANDO SESSIONSTORAGE) ---
         function clicarAlbum(e) {
             e.preventDefault();
             sessionStorage.setItem('viuAlbum', 'true');
@@ -792,7 +854,7 @@
         window.addEventListener('pageshow', function() { checarMissoes(); });
 
 
-        // --- LÓGICA DO BOTÃO FUGITIVO ---
+        // --- LÓGICA DO BOTÃO FUGITIVO (15 TENTATIVAS) ---
         const btnSimFoge = document.getElementById("btn-sim-foge");
         const btnNaoFoge = document.getElementById("btn-nao-foge");
         const containerFuga = document.getElementById("container-pergunta-fugitiva");
@@ -863,7 +925,7 @@
         document.addEventListener("touchmove", (e) => { const agora = Date.now(); if (agora - ultimoCoracao > tempoEspera) { spawnHeart(e.touches[0].clientX, e.touches[0].clientY); ultimoCoracao = agora; } });
 
         // --- CARTA E MOTIVOS ---
-        const mensagem = "Feliz Dia das Mulheres, meu amor! Você é a mulher mais especial da minha vida e o meu maior desejo é ter você sempre ao meu lado. Sei que este não é o maior dos presentes, mas cada detalhe foi feito de coração, com muito esforço e carinho, pensando unicamente em você. Eu te amo infinitamente! Aproveite este seu cantinho... ❤️";
+        const mensagem = "Amoreco, não precisa de data especial pra eu te dizer o quanto te amo. Você é o melhor presente que a vida me deu, e cada cantinho daqui foi feito pensando só em você. Obrigado por existir e por ser minha. Te amo infinitamente! ❤️";
         let charIndex = 0;
         function digitar() {
             if (charIndex < mensagem.length) {
@@ -976,51 +1038,8 @@
                 if (Date.now() < end) { requestAnimationFrame(frame); }
             }());
         }
-
-        // --- LÓGICA DO MESVERSÁRIO (TODO DIA 08) ---
-        function comemorarMesversario() {
-            const dataHoje = new Date();
-            // Verifica se o dia de hoje é exatamente dia 8
-            if (dataHoje.getDate() === 8) {
-                const banner = document.getElementById("banner-mesversario");
-                
-                // Espera 1 segundo e meio após ela entrar no site para fazer a surpresa
-                setTimeout(() => {
-                    banner.classList.add("mostrar-banner");
-                    
-                    // Dispara uma chuva de confetes focada nas cores do amor
-                    let duration = 5000; // 5 segundos de confetes
-                    let end = Date.now() + duration;
-
-                    (function frame() {
-                        confetti({
-                            particleCount: 8,
-                            angle: 60,
-                            spread: 60,
-                            origin: { x: 0 },
-                            colors: ['#ff3366', '#ffffff', '#ff8c00']
-                        });
-                        confetti({
-                            particleCount: 8,
-                            angle: 120,
-                            spread: 60,
-                            origin: { x: 1 },
-                            colors: ['#ff3366', '#ffffff', '#ff8c00']
-                        });
-
-                        if (Date.now() < end) {
-                            requestAnimationFrame(frame);
-                        }
-                    }());
-                    
-                    // Esconde a faixa depois de 8 segundos para não atrapalhar o site
-                    setTimeout(() => {
-                        banner.classList.remove("mostrar-banner");
-                    }, 8000);
-
-                }, 1500); 
-            }
-        }
     </script>
 </body>
 </html>
+
+
