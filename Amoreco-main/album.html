@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nossa Linha do Tempo ❤️</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    
+    <style>
+        /* FUNDO E BÁSICO */
+        body {
+            background: linear-gradient(-45deg, #ff3366 0%, #d90429 30%, #4a0080 60%, #000033 85%, #050505 100%);
+            background-size: 400% 400%;
+            animation: respiracao 8s ease-in-out infinite;
+            min-height: 100vh;
+            margin: 0; padding: 0;
+            color: white;
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            overflow-x: hidden; 
+        }
+        @keyframes respiracao { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+
+        h1 { font-family: 'Dancing Script', cursive; font-size: 4em; text-align: center; text-shadow: 0 0 10px rgba(255, 51, 102, 0.8); margin: 20px 0; }
+        
+        .botao-estilo { display: inline-block; padding: 10px 20px; background: rgba(255, 255, 255, 0.2); color: white; text-decoration: none; border-radius: 20px; font-weight: bold; transition: 0.3s; box-shadow: 0 4px 15px rgba(0,0,0,0.3); position: fixed; top: 20px; left: 20px; z-index: 1000; backdrop-filter: blur(5px); }
+        .botao-estilo:hover { transform: scale(1.05); background: rgba(255, 255, 255, 0.3); }
+
+        /* --- LINHA DO TEMPO VERTICAL --- */
+        .container-timeline {
+            position: relative;
+            max-width: 800px;
+            margin: 100px auto 50px auto; 
+            padding-bottom: 50px;
+        }
+
+        /* A linha central cintilante da timeline */
+        .container-timeline::after {
+            content: ''; position: absolute; width: 4px; background-color: rgba(255, 255, 255, 0.3);
+            top: 0; bottom: 0; left: 50%; margin-left: -2px;
+            border-radius: 2px; box-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+            z-index: 1;
+        }
+
+        /* Cada 'estação' de foto */
+        .sessao-foto {
+            padding: 10px 40px;
+            position: relative;
+            background-color: transparent;
+            width: 50%;
+            box-sizing: border-box;
+            opacity: 0; 
+            z-index: 10;
+        }
+
+        /* Alternância: Fotos na Esquerda e Direita */
+        .sessao-foto.esquerda { left: 0; transform: translateX(-50px); }
+        .sessao-foto.direita { left: 50%; transform: translateX(50px); }
+
+        /* O pontinho rosa na linha central */
+        .sessao-foto::after {
+            content: ''; position: absolute; width: 20px; height: 20px;
+            right: -12px; background-color: #ff3366; border: 3px solid white;
+            top: 40px; border-radius: 50%; z-index: 10; box-shadow: 0 0 10px #ff3366;
+        }
+        .sessao-foto.direita::after { left: -11px; }
+
+        /* Conteúdo da Foto */
+        .conteudo-foto {
+            padding: 15px; background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px); position: relative; border-radius: 15px;
+            border: 2px solid rgba(255, 255, 255, 0.5); box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+
+        .conteudo-foto img {
+            width: 100%; border-radius: 10px; cursor: pointer; transition: 0.3s;
+            max-height: 300px; object-fit: cover;
+        }
+        .conteudo-foto img:hover { transform: scale(1.03); box-shadow: 0 0 15px #ff3366; }
+        
+        .legenda-foto { font-weight: bold; margin-top: 10px; font-size: 1.1em; color: #ff3366; text-shadow: 1px 1px 2px black; text-align: center; }
+
+        /* --- PEGADAS COM EMOJI --- */
+        .pegada {
+            position: absolute;
+            font-size: 35px;
+            opacity: 0; 
+            z-index: 5; 
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.8), 0 0 20px rgba(0, 255, 255, 0.5);
+        }
+
+        /* --- SESSÃO FINAL (EM CONSTRUÇÃO) --- */
+        .final-timeline {
+            text-align: center;
+            padding: 30px 20px;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
+            border: 2px dashed #ffb3c6; 
+            border-radius: 15px;
+            margin: 0 auto 50px auto;
+            width: 85%;
+            max-width: 500px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            opacity: 0; 
+            transform: translateY(30px); 
+        }
+        
+        .final-timeline p {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: white;
+            margin: 10px 0 0 0;
+            text-shadow: 1px 1px 3px black;
+            line-height: 1.4;
+        }
+
+        .emojis-obra {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            animation: flutuarObra 2s infinite ease-in-out;
+        }
+
+        @keyframes flutuarObra {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        /* MODAL DE ZOOM */
+        .modal { display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.9); flex-direction: column; justify-content: center; align-items: center; }
+        .modal-conteudo { max-width: 90%; max-height: 70vh; border-radius: 15px; border: 4px solid white; box-shadow: 0 0 20px #ff3366; }
+        #texto-foto { color: white; font-size: 1.5em; font-weight: bold; margin-top: 15px; text-shadow: 1px 1px 5px #ff3366; }
+
+    </style>
+</head>
+<body>
+
+    <div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
+        <a href="index.html" class="botao-estilo">⬅️ Voltar</a>
+        <button id="btn-play-album" class="botao-estilo" style="background: #1db954; position: relative; top: 0; left: 0; margin-top: 20px;">▶️ Ouvir música do álbum</button>
+    </div>
+
+    <audio id="musica-album" style="display: none;" autoplay>
+        <source src="musica.m4a" type="audio/mpeg">
+    </audio>
+    
+    <h1>Nossa Linha do Tempo 📸</h1>
+
+    <div class="container-timeline" id="timeline">
+
+        <div class="sessao-foto esquerda">
+            <div class="conteudo-foto"><img src="nossa-foto.jpeg" alt="O começo de tudo ❤️" onclick="abrirModal(this)"><div class="legenda-foto">O começo de tudo ❤️</div></div>
+        </div>
+        <div class="sessao-foto direita">
+            <div class="conteudo-foto"><img src="foto1.jpeg" alt="🙈😂 Alguém tá com vergonha hein kkkk" onclick="abrirModal(this)"><div class="legenda-foto">🙈😂 Alguém tá com vergonha hein kkkk</div></div>
+        </div>
+        <div class="sessao-foto esquerda">
+            <div class="conteudo-foto"><img src="foto2.jpeg" alt="Essa nossa foto é especial para mim 😍" onclick="abrirModal(this)"><div class="legenda-foto">Essa nossa foto é especial para mim 😍</div></div>
+        </div>
+        <div class="sessao-foto direita">
+            <div class="conteudo-foto"><img src="foto3.jpeg" alt="✨😍 Definição de foto perfeita" onclick="abrirModal(this)"><div class="legenda-foto">✨😍 Definição de foto perfeita</div></div>
+        </div>
+        <div class="sessao-foto esquerda">
+            <div class="conteudo-foto"><img src="eueamoreco.jpeg" alt="Eu e meu amoreco 😍" onclick="abrirModal(this)"><div class="legenda-foto">Eu e meu amoreco 😍</div></div>
+        </div>
+        <div class="sessao-foto direita">
+            <div class="conteudo-foto"><img src="eujogandoeamo.jpeg" alt="🎮👩‍❤️‍👨 Ela me acompanhando na jogatina" onclick="abrirModal(this)"><div class="legenda-foto">🎮👩‍❤️‍👨 Ela me acompanhando na jogatina</div></div>
+        </div>
+        <div class="sessao-foto esquerda">
+            <div class="conteudo-foto"><img src="bicoepiscina.jpeg" alt="Bico na piscina 😍" onclick="abrirModal(this)"><div class="legenda-foto">Bico na piscina 😍</div></div>
+        </div>
+        <div class="sessao-foto direita">
+            <div class="conteudo-foto"><img src="ecacurintia.jpeg" alt="Eca Curintia kkk 😂" onclick="abrirModal(this)"><div class="legenda-foto">Eca Curintia kkk 😂</div></div>
+        </div>
+        <div class="sessao-foto esquerda">
+            <div class="conteudo-foto"><img src="cineminha.jpeg" alt="🍿🎬❤️ Date no cinema" onclick="abrirModal(this)"><div class="legenda-foto">🍿🎬❤️ Date no cinema</div></div>
+        </div>
+        <div class="sessao-foto direita">
+            <div class="conteudo-foto"><img src="concentrado.jpeg" alt="Foco total 😍" onclick="abrirModal(this)"><div class="legenda-foto">Foco total 😍</div></div>
+        </div>
+        <div class="sessao-foto esquerda">
+            <div class="conteudo-foto"><img src="corintos.jpeg" alt="🐳⚽📣 Vai Santos" onclick="abrirModal(this)"><div class="legenda-foto">🐳⚽📣 Vai Santos</div></div>
+        </div>
+        <div class="sessao-foto direita">
+            <div class="conteudo-foto"><img src="jogatina.jpeg" alt="Jogando juntos 😍" onclick="abrirModal(this)"><div class="legenda-foto">Jogando juntos 😍</div></div>
+        </div>
+               
+    </div> 
+
+    <div class="final-timeline">
+        <div class="emojis-obra">🚧 👷‍♂️ 🧱 🏗️ 🔨</div>
+        <p>Aguarde aí mocinha, vamos tirar mais fotos juntos e vou colocando no seu mural ❤️</p>
+    </div>
+
+    <div id="meuModal" class="modal" onclick="this.style.display='none'">
+        <img class="modal-conteudo" id="imagemZoom">
+        <p id="texto-foto"></p>
+    </div>
+
+    <script>
+        // Inicia a biblioteca de animação
+        gsap.registerPlugin(ScrollTrigger);
+
+        // --- 1. LÓGICA DE APARECER AS FOTOS ---
+        const fotos = gsap.utils.toArray(".sessao-foto");
+        fotos.forEach((foto, i) => {
+            gsap.to(foto, {
+                scrollTrigger: {
+                    trigger: foto,
+                    start: "top 75%",
+                    end: "top 40%",
+                    scrub: true,
+                },
+                opacity: 1,
+                x: 0,
+                ease: "power2.out"
+            });
+        });
+
+        // --- 2. LÓGICA DA PLAQUINHA FINAL ---
+        gsap.to(".final-timeline", {
+            scrollTrigger: {
+                trigger: ".final-timeline",
+                start: "top 90%", 
+                end: "top 70%",
+                scrub: true,
+            },
+            opacity: 1,
+            y: 0, 
+            ease: "power2.out"
+        });
+
+        // --- 3. LÓGICA DAS PEGADAS ---
+        const timeline = document.getElementById("timeline");
+        const numPegadas = fotos.length * 6; 
+
+        for (let i = 0; i < numPegadas; i++) {
+            const pegada = document.createElement("div");
+            pegada.className = "pegada";
+            pegada.innerHTML = "👣";
+
+            const progress = i / (numPegadas - 1);
+            pegada.style.top = (progress * 100) + "%";
+
+            const wave = -Math.sin(progress * Math.PI * fotos.length); 
+            const curvaParaFoto = wave * 50; 
+            pegada.style.left = `calc(50% + ${curvaParaFoto}px)`;
+            
+            const direcaoDoPe = 180 - (wave * 30); 
+            pegada.style.transform = `translate(-50%, -50%) rotate(${direcaoDoPe}deg)`;
+            
+            timeline.appendChild(pegada);
+
+            gsap.timeline({
+                scrollTrigger: {
+                    trigger: pegada,
+                    start: "top 70%", 
+                    end: "top 20%",   
+                    scrub: true,
+                }
+            })
+            .to(pegada, { opacity: 1, duration: 0.2 }) 
+            .to(pegada, { opacity: 0.8, duration: 0.5 }) 
+            .to(pegada, { opacity: 0, duration: 0.3 }); 
+        }
+
+        // --- LÓGICA DA MÚSICA DO ÁLBUM ---
+        const audioAlbum = document.getElementById("musica-album");
+        const btnAlbum = document.getElementById("btn-play-album");
+
+        // 👇👇 CONFIGURAÇÃO DE TEMPO DA MÚSICA 👇👇
+        const tempoInicioAlbum = 214; // Segundo exato que a música começa
+        const tempoFimAlbum = 245;   // Segundo que a música 'acaba' e volta pro começo (coloque 0 se não quiser cortar)
+
+        // Garante que o áudio vá para o ponto certo assim que os dados carregarem
+        audioAlbum.addEventListener('loadedmetadata', () => {
+            audioAlbum.currentTime = tempoInicioAlbum;
+        });
+
+        window.addEventListener('load', () => {
+            audioAlbum.currentTime = tempoInicioAlbum;
+            audioAlbum.play().then(() => {
+                btnAlbum.innerHTML = "🎶 Tocando agora...";
+                btnAlbum.style.background = "#ff3366";
+            }).catch(() => { console.log("O clique manual é necessário neste celular."); });
+        });
+
+        btnAlbum.onclick = () => {
+            if (audioAlbum.paused) {
+                // Se a música estiver no começo ou antes do tempo, adianta ela
+                if (audioAlbum.currentTime < tempoInicioAlbum) {
+                    audioAlbum.currentTime = tempoInicioAlbum;
+                }
+                audioAlbum.play();
+                btnAlbum.innerHTML = "🎶 Tocando agora...";
+                btnAlbum.style.background = "#ff3366";
+            } else {
+                audioAlbum.pause();
+                btnAlbum.innerHTML = "▶️ Ouvir música do álbum";
+                btnAlbum.style.background = "#1db954";
+            }
+        };
+
+        // 👇👇 A MÁGICA DO LOOP VOLTANDO PRO INÍCIO 👇👇
+        audioAlbum.ontimeupdate = () => {
+            // Se passar do tempoFimAlbum, ele volta lá pro início
+            if (tempoFimAlbum > 245 && audioAlbum.currentTime >= tempoFimAlbum) {
+                audioAlbum.currentTime = tempoInicioAlbum;
+                audioAlbum.play();
+            }
+        };
+
+        // Se o arquivo acabar naturalmente, também volta pro início
+        audioAlbum.onended = () => {
+            audioAlbum.currentTime = tempoInicioAlbum;
+            audioAlbum.play();
+        };
+
+        // --- LÓGICA DO MODAL ---
+        function abrirModal(img) {
+            document.getElementById("meuModal").style.display = "flex";
+            document.getElementById("imagemZoom").src = img.src;
+            document.getElementById("texto-foto").innerHTML = img.alt;
+        }
+    </script>
+</body>
+
+</html>
